@@ -1,0 +1,16 @@
+{
+    "canevas": "yellow",
+    "letters": {
+        "active": "write",
+        "used": "grey",
+        "border": "black"
+    },
+    "line": {
+        "color": "black",
+        "width": 2
+    },
+    "theme": {
+        "id": 1,
+        "name": "default"
+    }
+}
