@@ -1,40 +1,37 @@
-<?xml version="1.0"?>
-<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd" [
-]>
+<?xml version="1.0" encoding="UTF-8"?>
 <menus>
-    <menu categorie="fichiers">
-
+    <menu categorie="Fichiers">
         <lien>
             <label>Nouvelle partie</label>
-            <command>Objet.function</command>
+            <command>None</command>
         </lien>
         <lien>
-            <label>Niveaux / thèmes </label> <!-- développeur, UI designer, ...etc-->
-            <command>Objet.function</command>
+            <label>Choisir une thématique</label> <!-- développeur, UI designer, ...etc-->
+            <command>None</command>
         </lien>
         <lien>
-            <label>Apparence </label>
-            <command>Objet.function</command>
+            <label>Choisir une apparence</label>
+            <command>None</command>
         </lien>
         <lien>
             <label>Quitter </label>
-            <command>Objet.function</command>
+            <command>close</command>
         </lien>
     </menu>
-    <menu categorie="édition">
+    <menu categorie="Édition">
         <lien>
-            <label>Editer les mots </label>
-            <command>Objet.function</command>
+            <label>Éditer les mots</label>
+            <command>None</command>
         </lien>
         <lien>
-            <label>Editer les niveaux </label>
-            <command>Objet.function</command>
+            <label>Éditer les thématiques</label>
+            <command>None</command>
         </lien>
     </menu>
-    <menu categorie="aide">
+    <menu categorie="Aide">
         <lien>
-        <label>A propos</label>
-        <command>Objet.function</command>
-        <lien>
+            <label>A propos</label>
+            <command>about</command>
+        </lien>
     </menu>
 </menus>
