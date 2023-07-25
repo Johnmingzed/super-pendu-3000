@@ -2,6 +2,7 @@ from tkinter import *
 
 
 class Pendu(object):
+    "Définition d'un objet graphique pendu"
     def __init__(self, canva: Canvas):
         self.pattern = [
             ('line', 20, 380, 380, 380),
@@ -48,8 +49,8 @@ def main():
     root = Tk()
     root.title("Super Pendu 3000")
 
-    canva = Canvas(root, background='#112233', height=400, width=400)
-    canva.pack(side=TOP)
+    canva = Canvas(root)
+    canva.pack()
 
     pendu = Pendu(canva)
 

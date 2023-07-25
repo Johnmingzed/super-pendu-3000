@@ -3,7 +3,7 @@
     <menu categorie="Fichiers">
         <lien>
             <label>Nouvelle partie</label>
-            <command>None</command>
+            <command>newgame</command>
         </lien>
         <lien>
             <label>Choisir une thématique</label> <!-- développeur, UI designer, ...etc-->

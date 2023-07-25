@@ -27,17 +27,17 @@ class Keyboard(object):
     def draw_key(self, x: int = offset, y: int = offset, width: int = key_size, height: int = key_size, letter: str = 'A'):
         "Dessine une touche de clavier"
         self.round_rectangle(x, y, x+width, y+height,
-                             outline=self.color, fill='', width=3, tags=letter)
-        self.canva.create_text(x+width/2, y+height/2, text=letter,
-                               fill=self.color, font=('Arial 20 bold'))
+                            outline=self.color, fill='', width=3, tags=letter)
+        self.canva.create_text(x+width/2, y+height/2, text=letter.upper(),
+                            fill=self.color, font=('Consolas bold', 20))
 
     def draw_key_line(self, word: str, line: int = 0):
         "Dessine une rangée de touche de clavier"
         position = 0
         for letter in word:
             self.draw_key(self.offset + (self.key_size+self.offset) * position,
-                          self.offset + (self.key_size+self.offset) * line,
-                          letter=letter)
+                            self.offset + (self.key_size+self.offset) * line,
+                            letter=letter)
             position += 1
 
     def draw_keyboard(self):
@@ -61,25 +61,25 @@ class Keyboard(object):
 
     def round_rectangle(self, x1: int, y1: int, x2: int, y2: int, radius: int = 20, **kwargs):
         points = [x1+radius, y1,
-                  x1+radius, y1,
-                  x2-radius, y1,
-                  x2-radius, y1,
-                  x2, y1,
-                  x2, y1+radius,
-                  x2, y1+radius,
-                  x2, y2-radius,
-                  x2, y2-radius,
-                  x2, y2,
-                  x2-radius, y2,
-                  x2-radius, y2,
-                  x1+radius, y2,
-                  x1+radius, y2,
-                  x1, y2,
-                  x1, y2-radius,
-                  x1, y2-radius,
-                  x1, y1+radius,
-                  x1, y1+radius,
-                  x1, y1]
+                    x1+radius, y1,
+                    x2-radius, y1,
+                    x2-radius, y1,
+                    x2, y1,
+                    x2, y1+radius,
+                    x2, y1+radius,
+                    x2, y2-radius,
+                    x2, y2-radius,
+                    x2, y2,
+                    x2-radius, y2,
+                    x2-radius, y2,
+                    x1+radius, y2,
+                    x1+radius, y2,
+                    x1, y2,
+                    x1, y2-radius,
+                    x1, y2-radius,
+                    x1, y1+radius,
+                    x1, y1+radius,
+                    x1, y1]
         return self.canva.create_polygon(points, **kwargs, smooth=True)
 
 
@@ -90,7 +90,7 @@ def main():
     canva = Canvas(root)
     canva.pack()
 
-    clavier = Keyboard(canva, column=10)
+    clavier = Keyboard(canva, column=10, alphabet='abcdefghijklmnopqrstuvwxyz')
 
     root.mainloop()
 

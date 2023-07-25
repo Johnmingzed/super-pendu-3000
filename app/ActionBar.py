@@ -11,6 +11,7 @@ class ActionBar(object):
         data = xml.parse(xml_file)
         menus = data.getroot()
         self.window = window
+        self.main = window
         # Création de la barre de menu
         action_bar = Menu(self.window)
 
@@ -58,8 +59,12 @@ class ActionBar(object):
 
     def close(self):
         "Quitter l'application"
-        self.window.destroy()
+        # self.window.destroy()
+        self.main.close()
 
+    def newgame(self):
+        "Lancer une nouvelle partie"
+        self.main.newgame()
 
 def main():
 
