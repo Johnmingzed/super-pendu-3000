@@ -1,0 +1,75 @@
+-- database: c:\xampp\htdocs\super-pendu-3000\data\data.sq3
+-- Use the ▷ button in the top right corner to run the entire file.
+PRAGMA foreign_keys = ON;
+
+DROP TABLE IF EXISTS mots_themes;
+
+DROP TABLE IF EXISTS mots;
+
+DROP TABLE IF EXISTS themes;
+
+CREATE TABLE
+    mots (
+        id_mots INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+        mot TEXT UNIQUE NOT NULL
+    );
+
+CREATE TABLE
+    themes (
+        id_themes INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,
+        theme TEXT UNIQUE NOT NULL
+    );
+
+CREATE TABLE
+    mots_themes (
+        id_themes INTEGER,
+        id_mots INTEGER,
+        PRIMARY KEY (id_themes, id_mots),
+        FOREIGN KEY (id_themes) REFERENCES themes (id_themes) ON DELETE CASCADE,
+        FOREIGN KEY (id_mots) REFERENCES mots (id_mots) ON DELETE CASCADE
+    );
+
+INSERT INTO
+    themes (theme)
+VALUES
+    ('Développement');
+
+INSERT INTO
+    mots (mot)
+VALUES
+    ('test');
+
+INSERT INTO
+    mots (mot)
+VALUES
+    ('serveur');
+
+INSERT INTO
+    mots_themes (id_mots, id_themes)
+VALUES
+    (
+        (
+            SELECT
+                id_mots
+            FROM
+                mots
+            WHERE
+                mot = 'test'
+        ),
+        (
+            SELECT
+                id_themes
+            FROM
+                themes
+            WHERE
+                theme = 'Développement'
+        )
+    );
+
+DELETE FROM themes
+WHERE
+    theme = 'Développement';
+
+DELETE FROM mots
+WHERE
+    mot = 'test';
