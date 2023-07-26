@@ -3,7 +3,12 @@ from tkinter import *
 
 class Pendu(object):
     "Définition d'un objet graphique pendu"
+
     def __init__(self, canva: Canvas):
+        self.canva = canva
+        self.canva.configure(width=400, height=400)
+        # Effacement du canva en cas de nouvelle partie
+        self.canva.delete('all')
         self.pattern = [
             ('line', 20, 380, 380, 380),
             ('line', 120, 380, 120, 20),
@@ -21,8 +26,6 @@ class Pendu(object):
         self.color = '#FFA200'
         self.width = 5
         self.complete = False
-        self.canva = canva
-        self.canva.configure(width=400, height=400)
 
     def draw(self) -> bool:
         step = self.cursor
@@ -31,10 +34,10 @@ class Pendu(object):
             drawPendu = self.pattern[step]
             if drawPendu[0] == 'line':
                 self.canva.create_line(drawPendu[1], drawPendu[2], drawPendu[3],
-                                    drawPendu[4], fill=self.color, width=self.width)
+                                       drawPendu[4], fill=self.color, width=self.width)
             elif drawPendu[0] == 'oval':
                 self.canva.create_oval(drawPendu[1], drawPendu[2], drawPendu[3],
-                                    drawPendu[4], outline=self.color, width=self.width)
+                                       drawPendu[4], outline=self.color, width=self.width)
             self.cursor += 1
             if step == len(self.pattern) - 1:
                 self.complete = True

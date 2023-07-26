@@ -6,12 +6,12 @@ from tkinter import messagebox
 class ActionBar(object):
     "Définition d'un menu d'application"
 
-    def __init__(self, window, xml_file) -> None:
+    def __init__(self, window, xml_file, main_instance) -> None:
         # Parse le fichier XML et obtient l'élément racine
         data = xml.parse(xml_file)
         menus = data.getroot()
         self.window = window
-        self.main = window
+        self.main = main_instance
         # Création de la barre de menu
         action_bar = Menu(self.window)
 
@@ -51,11 +51,12 @@ class ActionBar(object):
 
         # Fonction de commande par défaut si la commande n'est pas trouvée
         return lambda: print(f"Commande '{command_name}' non définie.")
+        
+        "Rechercher la function call"
 
     def about(self):
         "Affichage de la boîte de dialogue 'À propos'"
-        messagebox.showinfo(
-            "À propos", "Bienvenue dans le jeu du pendu, il est sous licence GNU-GPL 3.0")
+        self.main.about()
 
     def close(self):
         "Quitter l'application"
@@ -66,21 +67,32 @@ class ActionBar(object):
         "Lancer une nouvelle partie"
         self.main.newgame()
 
-def main():
+class Main():
 
-    # Chemin vers le fichier XML
-    xml_file = "./data/menus.xml"
+    def __init__(self) -> None:
 
-    # Fenêtre principale
-    window = Tk()
-    window.title("Super Pendu 3000")
+        # Chemin vers le fichier XML
+        xml_file = "./data/menus.xml"
 
-    # Création de la barre de menus
-    menu = ActionBar(window, xml_file)
+        # Fenêtre principale
+        window = Tk()
+        window.title("Super Pendu 3000")
 
-    # Rendu de l'application
-    window.mainloop()
+        # Création de la barre de menus
+        menu = ActionBar(window, xml_file, self)
+
+        # Rendu de l'application
+        window.mainloop()
+
+    def about(self):
+        print('A propos')
+
+    def close(self):
+        print('Fermeture')
+
+    def newgame(self):
+        print('Newgame')
 
 
 if __name__ == "__main__":
-    main()
+    main = Main()

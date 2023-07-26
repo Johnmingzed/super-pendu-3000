@@ -13,81 +13,86 @@ from tkinter import *
 from tkinter import messagebox
 
 
-def main():
+class Main():
 
-    # Palette de couleurs
-    bg_color = '#112233'
+    def __init__(self) -> None:
 
-    # Fenêtre principale
-    window = Tk()
-    window.title("Super Pendu 3000")
-    window.configure(background=bg_color)
+        # Palette de couleurs
+        bg_color = '#112233'
 
-    def play(e):
+        # Fenêtre principale
+        self.window = Tk()
+        self.window.title("Super Pendu 3000")
+        self.window.configure(background=bg_color)
+
+        # Chemin vers le fichier XML
+        self.xml_file = "./data/menus.xml"
+
+
+        # Création du layout
+        self.layout = Canvas(self.window, background=bg_color, highlightthickness=0)
+        self.layout.pack(expand=1)
+        self.area_pendu = Canvas(self.layout, background=bg_color, highlightthickness=0)
+        self.area_pendu.pack(side=LEFT)
+        self.area_info = Canvas(self.layout, background=bg_color, highlightthickness=0)
+        self.area_info.pack(side=LEFT)
+        self.area_word = Canvas(self.area_info, background=bg_color,
+                           highlightthickness=0)
+        self.area_word.pack(side=TOP)
+        self.area_keyboard = Canvas(
+            self.area_info, background=bg_color, highlightthickness=0)
+        self.area_keyboard.pack(side=BOTTOM)
+
+        self.newgame()
+
+    def newgame(self):
+        print("Initialisation d'une nouvelle partie")
+
+        # Création de la barre de menus
+        menu = ActionBar(self.window, self.xml_file, self)
+
+        # Instanciation de l'objet Pendu
+        self.pendu = Pendu(self.area_pendu)
+
+        # Instanciation de l'objet Keyboard
+        self.clavier = Keyboard(self.area_keyboard, column=10)
+
+        # Instanciation du l'objet Displayword
+        self.display = DisplayWord(self.area_word, 'polymorphisme')
+
+        # Tentative du joueur
+        self.window.bind('<Key>', self.play)
+
+        # Rendu de l'application
+        self.window.mainloop()
+
+    def play(self, e):
         # Bouttons de tests de l'affichage du pendu
-        if not gameover():
-            if not display.victory:
+        if not self.gameover():
+            if not self.display.victory:
                 key = e.char
-                if not display.testLetter(key):
-                    pendu.draw()
-                display.display()
-                gameover()
+                if not self.display.testLetter(key):
+                    self.pendu.draw()
+                self.display.display()
+                self.gameover()
 
-    def gameover():
-        if pendu.complete:
+    def gameover(self):
+        if self.pendu.complete:
             print('Vous avez perdu...')
             return 1
         else:
             return 0
 
-    def newgame():
-        print('Nouvelle partie')
 
-    def about():
+    def about(self):
         "Affichage de la boîte de dialogue 'À propos'"
         messagebox.showinfo(
             "À propos", "Bienvenue dans le jeu du pendu, il est sous licence GNU-GPL 3.0")
 
-    def close():
+    def close(self):
         "Quitter l'application"
-        window.destroy()
-
-
-    # Chemin vers le fichier XML
-    xml_file = "./data/menus.xml"
-
-
-    # Création de la barre de menus
-    menu = ActionBar(window, xml_file)
-
-    # Création du layout
-    layout = Canvas(window, background=bg_color, highlightthickness=0)
-    layout.pack(expand=1)
-    area_pendu = Canvas(layout, background=bg_color, highlightthickness=0)
-    area_pendu.pack(side=LEFT)
-    area_info = Canvas(layout, background=bg_color, highlightthickness=0)
-    area_info.pack(side=LEFT)
-    area_word = Canvas(area_info, background=bg_color, highlightthickness=0)
-    area_word.pack(side=TOP)
-    area_keyboard = Canvas(
-        area_info, background=bg_color, highlightthickness=0)
-    area_keyboard.pack(side=BOTTOM)
-
-    # Instanciation de l'objet Pendu
-    pendu = Pendu(area_pendu)
-
-    # Instanciation de l'objet Keyboard
-    clavier = Keyboard(area_keyboard, column=10)
-
-    # Instanciation du l'objet Displayword
-    display = DisplayWord(area_word, 'polymorphisme')
-
-    # Tentative du joueur
-    window.bind('<Key>', play)
-
-    # Rendu de l'application
-    window.mainloop()
+        self.window.destroy()
 
 
 if __name__ == "__main__":
-    main()
+    main = Main()

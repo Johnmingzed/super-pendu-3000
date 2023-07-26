@@ -16,6 +16,8 @@ class Keyboard(object):
 
     def __init__(self, canva: Canvas, alphabet: str = alphabet, column: int = key_per_line) -> None:
         self.canva = canva
+        # Effacement du canva en cas de nouvelle partie
+        self.canva.delete('all')
         self.alphabet = alphabet
         self.key_per_line = column
         self.key_list = self.key_row()
