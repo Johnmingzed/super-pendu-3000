@@ -75,7 +75,6 @@ class DisplayWord(object):
             self.score += 1
             if not self.rest:
                 self.victory = True
-                print('Vous avez gagné')
             return 1
         else:
             return 0

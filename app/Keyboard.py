@@ -45,7 +45,7 @@ class Keyboard(object):
                                fill=self.color, font=('Consolas bold', 20))
 
     def desactivate(self, key_id):
-        print('Lettre', key_id, 'cliquée')
+        # print('Lettre', key_id, 'cliquée')
         target = self.canva.find_withtag(key_id)[0]
         self.canva.itemconfig(target, fill=self.used_color,
                               outline=self.used_color)

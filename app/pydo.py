@@ -1,82 +1,88 @@
-import sqlite3 as pydo
-
-# Selection de la base de données
-database = pydo.connect('./data/data.sq3')
-cur = database.cursor()
+import sqlite3 as sqlite
 
 
-def create(name: str) -> None:
-    sql = (name.lower(),)
-    if name != "":
-        try:
-            cur.execute(
-                "INSERT INTO mots(mot) VALUES(?)", sql
-            )
-            database.commit()
-            print(f'---> "{name}" a bien été ajouté.')
-        except pydo.Error as e:
-            print('---> Erreur lors de la création :', e)
-    else:
-        print("Vous ne pouvez pas enregistrer un chaîne vide.")
+class Pydo(object):
+    "Définition d'un objet Pydo permettant les actions de CRUD sur une basse de données SQLite3"
 
+    def __init__(self, path: str) -> None:
+        self.database = sqlite.connect(path)
+        self.cur = self.database.cursor()
 
-def selectByName(name: str) -> tuple:
-    sql = (name.lower(),)
-    try:
-        req = cur.execute(
-            "SELECT * FROM mots WHERE mot=?", sql
-        )
-        result = req.fetchone()
-        if result:
-            return result
+    def create(self, name: str) -> None:
+        sql = (name.lower(),)
+        if name != "":
+            try:
+                self.cur.execute(
+                    "INSERT INTO mots(mot) VALUES(?)", sql
+                )
+                self.database.commit()
+                print(f'---> "{name}" a bien été ajouté.')
+            except sqlite.Error as e:
+                print('---> Erreur lors de la création :', e)
         else:
-            print(f"---> \"{name}\" n'existe pas.")
-    except pydo.Error as e:
-        print('---> Erreur lors de la séléction :', e)
+            print("Vous ne pouvez pas enregistrer un chaîne vide.")
 
-
-def selectAll() -> list:
-    try:
-        req = cur.execute("SELECT * FROM mots")
-        return req.fetchall()
-    except pydo.Error as e:
-        print('---> Erreur lors de la séléction :', e)
-
-
-def update(name: str, data: str) -> None:
-    if selectByName(name):
+    def selectByName(self, name: str) -> tuple:
+        sql = (name.lower(),)
         try:
-            sql = (data, name)
-            cur.execute("UPDATE mots SET age=? WHERE mot=?", sql)
-            database.commit()
-            print(f'---> Modification de {name} effectuée')
-        except pydo.Error as e:
-            print('---> Erreur lors de la mise à jour', e)
+            req = self.cur.execute(
+                "SELECT * FROM mots WHERE mot=?", sql
+            )
+            result = req.fetchone()
+            if result:
+                return result
+            else:
+                print(f"---> \"{sql}\" n'existe pas.")
+        except sqlite.Error as e:
+            print('---> Erreur lors de la séléction :', e)
 
-
-def delete(name: str):
-    if selectByName(name):
-        sql = (name,)
+    def selectAll(self) -> list:
         try:
-            cur.execute("DELETE FROM mots WHERE mot=?", sql)
-            database.commit()
-            print(f'---> Le mot "{name}" effacé')
-        except pydo.Error as e:
-            print('---> Erreur lors de la suppression :', e)
+            req = self.cur.execute("SELECT * FROM mots")
+            return req.fetchall()
+        except sqlite.Error as e:
+            print('---> Erreur lors de la séléction :', e)
+
+    def update(self, name: str, data: str) -> None:
+        if self.selectByName(name):
+            try:
+                sql = (data, name)
+                self.cur.execute("UPDATE mots SET mot=? WHERE mot=?", sql)
+                self.database.commit()
+                print(f'---> Modification de {name} effectuée')
+            except sqlite.Error as e:
+                print('---> Erreur lors de la mise à jour', e)
+
+    def delete(self, name: str):
+        if self.selectByName(name):
+            sql = (name,)
+            try:
+                self.cur.execute("DELETE FROM mots WHERE mot=?", sql)
+                self.database.commit()
+                print(f'---> Le mot "{name}" effacé')
+            except sqlite.Error as e:
+                print('---> Erreur lors de la suppression :', e)
 
 
 if __name__ == "__main__":
-    test = selectAll()
+
+    # Selection de la base de données
+    path = './data/data.sq3'
+
+    # Instanciation d'une BDD
+    bdd = Pydo(path)
+
+    test = bdd.selectAll()
     print(test, type(test))
 
     # update(45, 24)
-    delete('JavaScript')
-    create("Serveur")
-    create("JavaScript")
-    create("Front-end")
-    create("Back-end")
-    create("Full Stack")
-    testOne = selectByName('Javascript')
+    bdd.delete('JavaScript')
+    bdd.create("Serveur")
+    bdd.create("JavaScript")
+    bdd.create("Front-end")
+    bdd.create("Back-end")
+    bdd.create("Full Stack")
+    testOne = bdd.selectByName('Javascript')
     print(testOne)
     # update('Paul', 40)
 

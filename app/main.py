@@ -2,9 +2,8 @@
 
 import List
 import Theme
-import Word
 import random
-import pydo
+from Word import Word
 from Config import Config
 from Pendu import Pendu
 from DisplayWord import DisplayWord
@@ -22,6 +21,7 @@ class Main():
         # Chemin vers les fichiers de configuration
         self.xml_file = "./data/menus.xml"
         self.json_file = "./data/conf.json"
+        self.sql_file = "./data/data.sq3"
 
         # Chargement du fichier de configuration
         self.config = Config(self.json_file).toDict()
@@ -33,6 +33,7 @@ class Main():
         self.window = Tk()
         self.window.title("Super Pendu 3000")
         self.window.configure(background=bg_color)
+        self.window.iconbitmap("./data/favicon.ico")
 
         # Création du layout
         self.layout = Canvas(
@@ -51,10 +52,24 @@ class Main():
             self.area_info, background=bg_color, highlightthickness=0)
         self.area_keyboard.pack(side=BOTTOM)
 
+        # Création des Mots
+        self.wordlist = Word(self.sql_file)
+
+        # Lancement de la partie
         self.newgame()
 
-    def newgame(self):
+    def newgame(self, word: str = None) -> None:
         print("Initialisation d'une nouvelle partie")
+
+        # Définition du mot à trouver
+        if word:
+            print('Nouveau mot fournit')
+            self.word_to_guess = word
+        else:
+            print('Remise à zero de la liste des mots')
+            self.wordlist.selectAll()
+            self.wordlist.viewList()
+            self.word_to_guess = self.wordlist.random()
 
         # Création de la barre de menus
         menu = ActionBar(self.window, self.xml_file, self)
@@ -65,9 +80,12 @@ class Main():
         # Instanciation de l'objet Keyboard
         self.clavier = Keyboard(self.area_keyboard, self.config, column=10)
 
-        # Instanciation du l'objet Displayword
+        # Instanciation du l'objet Displayword avec trnasmission du mot
         self.display = DisplayWord(
-            self.area_word, 'polymorphisme', self.config)
+            self.area_word, self.word_to_guess, self.config)
+
+        # Suivi des tentatives
+        self.letters_played = []
 
         # Tentative du joueur
         self.window.bind('<Key>', self.keyPlay)
@@ -76,15 +94,14 @@ class Main():
         # Rendu de l'application
         self.window.mainloop()
 
-    def keyPlay(self, e):
+    def keyPlay(self, e: Event) -> None:
         if not self.gameover() and not self.display.victory and e.char:
             # On vérifie que la touche entrée correspont à un caractère
             key = e.char
-            print("Clavier input :", key, "Event :", e)
             if key in string.ascii_letters:
                 self.play(key)
 
-    def mousePlay(self, e):
+    def mousePlay(self, e: Event) -> None:
         if not self.gameover() and not self.display.victory:
             target_id = self.area_keyboard.find_closest(e.x, e.y)
             target_tags = self.area_keyboard.gettags(target_id)
@@ -93,26 +110,48 @@ class Main():
                     letter = target_tags[0]
                     self.play(letter)
 
-    def play(self, key):
-        if not self.display.testLetter(key):
-            self.pendu.draw()
-        self.clavier.desactivate(key)
-        self.display.display()
-        self.gameover()
+    def play(self, key: str) -> None:
+        if self.noRepeat(key):
+            if not self.display.testLetter(key):
+                self.pendu.draw()
+            self.clavier.desactivate(key)
+            self.display.display()
+            self.victory()
+            self.gameover()
 
-    def gameover(self):
+    def gameover(self) -> None:
         if self.pendu.complete:
-            print('Vous avez perdu...')
+            message = f"Désolé, mais vous avez perdu... Le mot était \"{self.word_to_guess}\".\nVoulez-vous faire une nouvelle partie ?"
+            newgame = messagebox.askyesno("Game over", message)
+            if newgame:
+                self.newgame()
             return 1
         else:
             return 0
 
-    def about(self):
+    def noRepeat(self, key: str) -> bool:
+        "Vérification que la lettre n'a pas déjà été jouée"
+        if key in self.letters_played:
+            print("Lettre déjà jouée")
+            return 0
+        else:
+            self.letters_played.append(key)
+            print("Lettres jouées :", self.letters_played)
+            return 1
+
+    def victory(self) -> None:
+        if self.display.victory:
+            message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez-vous continuer ?"
+            newgame = messagebox.askyesno("Victoire !", message)
+            if newgame:
+                self.newgame(self.wordlist.random())
+
+    def about(self) -> None:
         "Affichage de la boîte de dialogue 'À propos'"
         messagebox.showinfo(
             "À propos", "Bienvenue dans le jeu du pendu, il est sous licence GNU-GPL 3.0")
 
-    def close(self):
+    def close(self) -> None:
         "Quitter l'application"
         self.window.destroy()
 
