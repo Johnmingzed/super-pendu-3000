@@ -27,7 +27,11 @@ class Main():
         self.config = Config(self.json_file).toDict()
 
         # Palette de couleurs
-        bg_color = self.config['canevas']
+        if hasattr(self, "config"):
+            bg_color = self.config['canevas']
+        else:
+            bg_color = '#112233'
+            self.config = None
 
         # Fenêtre principale
         self.window = Tk()
@@ -35,22 +39,34 @@ class Main():
         self.window.configure(background=bg_color)
         self.window.iconbitmap("./data/favicon.ico")
 
-        # Création du layout
+        # Création du layout général
         self.layout = Canvas(
             self.window, background=bg_color, highlightthickness=0)
-        self.layout.pack(expand=1)
+        self.layout.pack(expand=True, fill=BOTH)
+
+        # Création du layout pendu
         self.area_pendu = Canvas(
             self.layout, background=bg_color, highlightthickness=0)
-        self.area_pendu.pack(side=LEFT)
+        self.area_pendu.pack(side=LEFT, expand=True, fill=BOTH)
+
+        # Création du layout clavier + mot
+        if self.config:
+            bg_color2 = 'white'
+        else:
+            bg_color2 = bg_color
         self.area_info = Canvas(
-            self.layout, background=bg_color, highlightthickness=0)
-        self.area_info.pack(side=LEFT)
-        self.area_word = Canvas(self.area_info, background=bg_color,
+            self.layout, background=bg_color2, highlightthickness=0)
+        self.area_info.pack(side=RIGHT, expand=True, fill=BOTH)
+
+        # Création du layout du mot
+        self.area_word = Canvas(self.area_info, background=bg_color2,
                                 highlightthickness=0)
-        self.area_word.pack(side=TOP)
+        self.area_word.pack(expand=1)
+
+        # Création du layout du clavier
         self.area_keyboard = Canvas(
-            self.area_info, background=bg_color, highlightthickness=0)
-        self.area_keyboard.pack(side=BOTTOM)
+            self.area_info, background=bg_color2, highlightthickness=0)
+        self.area_keyboard.pack(expand=1)
 
         # Création des Mots
         self.wordlist = Word(self.sql_file)
