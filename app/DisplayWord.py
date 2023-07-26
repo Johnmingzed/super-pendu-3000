@@ -11,8 +11,11 @@ class DisplayWord(object):
     word_width = 600
     word_height = 200
 
-    def __init__(self, canva: Canvas, baseword: str) -> None:
+    def __init__(self, canva: Canvas, baseword: str, config: dict = None) -> None:
         # Variable d'initialisation
+        self.config = config
+        if self.config:
+            self.color = self.color = self.config['line']['color']
         self.victory = False
         self.score = 0
         self.canva = canva

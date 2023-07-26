@@ -1,13 +1,13 @@
 {
     "canevas": "yellow",
     "letters": {
-        "active": "write",
+        "active": "white",
         "used": "grey",
         "border": "black"
     },
     "line": {
         "color": "black",
-        "width": 2
+        "width": 5
     },
     "theme": {
         "id": 1,

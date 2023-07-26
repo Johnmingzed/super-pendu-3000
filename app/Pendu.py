@@ -4,7 +4,8 @@ from tkinter import *
 class Pendu(object):
     "Définition d'un objet graphique pendu"
 
-    def __init__(self, canva: Canvas):
+    def __init__(self, canva: Canvas, config: dict = None) -> None:
+        self.config = config
         self.canva = canva
         self.canva.configure(width=400, height=400)
         # Effacement du canva en cas de nouvelle partie
@@ -23,8 +24,12 @@ class Pendu(object):
             ('line', 250, 160, 280, 220)
         ]
         self.cursor = 0
-        self.color = '#FFA200'
-        self.width = 5
+        if self.config:
+            self.color = self.config['line']['color']
+            self.width = self.config['line']['width']
+        else:
+            self.color = '#FFA200'
+            self.width = 5
         self.complete = False
 
     def draw(self) -> bool:
