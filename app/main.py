@@ -12,6 +12,7 @@ from Keyboard import Keyboard
 from ActionBar import ActionBar
 from tkinter import *
 from tkinter import messagebox
+import string
 
 
 class Main():
@@ -76,20 +77,21 @@ class Main():
         self.window.mainloop()
 
     def keyPlay(self, e):
-        if not self.gameover():
-            if not self.display.victory:
-                key = e.char
+        if not self.gameover() and not self.display.victory and e.char:
+            # On vérifie que la touche entrée correspont à un caractère
+            key = e.char
+            print("Clavier input :", key, "Event :", e)
+            if key in string.ascii_letters:
                 self.play(key)
 
     def mousePlay(self, e):
-        if not self.gameover():
-            if not self.display.victory:
-                target_id = self.area_keyboard.find_closest(e.x, e.y)
-                target_tags = self.area_keyboard.gettags(target_id)
-                if len(target_tags) == 2:
-                    if target_tags[1] == 'current':
-                        letter = target_tags[0]
-                        self.play(letter)
+        if not self.gameover() and not self.display.victory:
+            target_id = self.area_keyboard.find_closest(e.x, e.y)
+            target_tags = self.area_keyboard.gettags(target_id)
+            if len(target_tags) == 2:
+                if target_tags[1] == 'current':
+                    letter = target_tags[0]
+                    self.play(letter)
 
     def play(self, key):
         if not self.display.testLetter(key):
