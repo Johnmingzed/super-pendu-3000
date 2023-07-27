@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter.font as myfont
+import string
 
 
 class DisplayWord(object):
@@ -51,7 +52,12 @@ class DisplayWord(object):
 
     def setPlaceHolder(self):
         for letter in self.baseword:
-            self.placeholder += "_"
+            if letter in string.punctuation + string.whitespace:
+                new_letter = letter
+                self.rest -= 1
+            else:
+                new_letter = "_"
+            self.placeholder += new_letter
 
     def testLetter(self, letter_to_test: str) -> int:
         index = 0
@@ -87,6 +93,10 @@ def main():
             key = e.char
             guess.testLetter(key)
             guess.display()
+            print(guess.rest)
+
+            if guess.victory:
+                print('Terminé')
 
     root = Tk()
     root.title("Super DisplayWord 3000")
