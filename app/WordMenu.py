@@ -9,26 +9,28 @@
 
 from tkinter import *
 from Pydo import Pydo
+from unidecode import unidecode
 
 
 class WordMenu(object):
     "Classe représentant une fenêtre de gestion des mots."
 
-    def __init__(self, bdd: Pydo = None):
-        self.words = Pydo(bdd)
+    def __init__(self, bdd: str, table: str = "mots") -> None:
+        # Appel de la BDD
+        self.table = table
+        bdd_table = unidecode(table)
+        self.words = Pydo(bdd, bdd_table)
 
         # Création de la fenêtre
         self.word_menu = Toplevel()
-        self.word_menu.title("Édition des mots à utiliser")
+        self.word_menu.title(f"Édition des {self.table} à utiliser")
         self.word_menu.geometry("350x350")
         self.word_menu.resizable(0, 1)
         self.word_menu.minsize(350, 250)
-        
 
         # Container pour la liste
         self.list_layout = Frame(self.word_menu)
-        self.list_layout.pack(side=LEFT, fill=BOTH,
-                              expand=False, padx=10, pady=10)
+        self.list_layout.pack(side=LEFT, fill=Y, padx=10, pady=10)
 
         # Container de droite
         self.right_layout = Frame(self.word_menu)
@@ -48,7 +50,7 @@ class WordMenu(object):
         self.infos_layout.pack(side=TOP, fill=X)
 
         # Texte d'information
-        infos = "Vous pouvez directement ajouter un nouveau mot dans le champ ci-contre (les accents seront automatiquement retirés) ou sélectionner un mot dans la liste pour le modifier ou le supprimer."
+        infos = f"Vous pouvez directement ajouter un nouveau {self.table[:-1]} dans le champ ci-contre (les accents seront automatiquement retirés) ou sélectionner un {self.table[:-1]} dans la liste pour le modifier ou le supprimer."
         self.info = Label(self.infos_layout, text=infos, font=("Arial", 10))
         self.info.bind("<Configure>", lambda e: self.info.config(
             wraplength=self.info.winfo_width()))
@@ -67,14 +69,12 @@ class WordMenu(object):
         # Création d'un champ de modification
         self.modify_word = Entry(self.actions_layout)
         self.modify_word.configure(state=DISABLED)
-        # self.modify_word.bind("<Button>", self.enterText)
-        # self.modify_word.bind("<Return>", self.validText)
-        # self.modify_word.bind("<FocusOut>", self.leaveText)
+        self.modify_word.bind("<Return>", self.modify)
         self.modify_word.grid(row=0, columnspan=2, sticky=EW, pady=10)
 
         # Création d'un champ de saisie
         self.enter_word = Entry(self.list_layout)
-        self.enter_word.insert(0, "Ajouter un mot")
+        self.enter_word.insert(0, f"Ajouter un {self.table[:-1]}")
         self.enter_word.configure(state=DISABLED)
         self.enter_word.bind("<Button>", self.enterText)
         self.enter_word.bind("<Return>", self.validText)
@@ -116,15 +116,16 @@ class WordMenu(object):
         self.clearModif()
 
     def clearModif(self):
-        self.modify_word.delete(0,END)
+        self.modify_word.delete(0, END)
         self.liste.select_clear(0, END)
         self.modif_button.configure(state=DISABLED)
         self.delete_button.configure(state=DISABLED)
+        self.modify_word.configure(state=DISABLED)
         self.word_to_modify = None
 
     def leaveText(self, event):
         self.enter_word.delete(0, END)
-        self.enter_word.insert(0, "Ajouter un mot")
+        self.enter_word.insert(0, f"Ajouter un {self.table[:-1]}")
         self.enter_word.configure(state=DISABLED)
 
     def validText(self, event):
@@ -133,7 +134,7 @@ class WordMenu(object):
         self.enter_word.delete(0, END)
         self.createList()
 
-    def modify(self,):
+    def modify(self, event=None):
         word = self.modify_word.get()
         self.words.update(self.word_to_modify, word)
         self.clearModif()
@@ -144,7 +145,6 @@ class WordMenu(object):
         self.words.delete(word)
         self.clearModif()
         self.createList()
-
 
 
 if __name__ == '__main__':

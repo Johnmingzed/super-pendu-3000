@@ -203,10 +203,15 @@ class Main():
 
     def editWords(self) -> None:
         "Editer la liste des mots disponibles"
-        self.word_edit = WordMenu(self.sql_file)
         x, y = self.window.winfo_x(), self.window.winfo_y()
+        self.word_edit = WordMenu(self.sql_file)
         self.word_edit.word_menu.geometry(f"+{x+400}+{y+40}")
-        print(self.window.winfo_height(), self.window.winfo_width())
+
+    def editThemes(self) -> None:
+        "Editer la liste des themes disponibles"
+        x, y = self.window.winfo_x(), self.window.winfo_y()
+        self.themes_edit = WordMenu(self.sql_file)
+        self.themes_edit.word_menu.geometry(f"+{x+400}+{y+40}")
 
 
 if __name__ == "__main__":

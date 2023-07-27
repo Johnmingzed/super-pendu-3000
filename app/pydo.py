@@ -13,9 +13,19 @@ from unidecode import unidecode
 class Pydo(object):
     "Définition d'un objet Pydo permettant les actions de CRUD sur une basse de données SQLite3"
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, table: str) -> None:
+        themes = ['themes', 'theme']
+        mots = ['mots', 'mot']
+
         self.database = sqlite.connect(path)
         self.cur = self.database.cursor()
+        if table == 'themes':
+            self.table = themes
+        elif table == 'mots':
+            self.table = mots
+        else:
+            print("Aucune table correspondante dans la base de données")
+            exit()
 
     def create(self, name: str) -> None:
         if name != "":
@@ -23,7 +33,7 @@ class Pydo(object):
             sql = (name.lower(),)
             try:
                 self.cur.execute(
-                    "INSERT INTO mots(mot) VALUES(?)", sql
+                    f"INSERT INTO {self.table[0]}({self.table[1]}) VALUES(?)", sql
                 )
                 self.database.commit()
                 print(f'---> "{name}" a bien été ajouté.')
@@ -37,7 +47,7 @@ class Pydo(object):
         sql = (name.lower(),)
         try:
             req = self.cur.execute(
-                "SELECT * FROM mots WHERE mot=?", sql
+                f"SELECT * FROM {self.table[0]} WHERE {self.table[1]}=?", sql
             )
             result = req.fetchone()
             if result:
@@ -49,7 +59,7 @@ class Pydo(object):
 
     def selectAll(self) -> list:
         try:
-            req = self.cur.execute("SELECT * FROM mots")
+            req = self.cur.execute(f"SELECT * FROM {self.table[0]}")
             return req.fetchall()
         except sqlite.Error as e:
             print('---> Erreur lors de la séléction :', e)
@@ -59,7 +69,8 @@ class Pydo(object):
             data = self.formatText(data)
             try:
                 sql = (data, name)
-                self.cur.execute("UPDATE mots SET mot=? WHERE mot=?", sql)
+                self.cur.execute(
+                    f"UPDATE {self.table[0]} SET {self.table[1]}=? WHERE {self.table[1]}=?", sql)
                 self.database.commit()
                 print(f'---> Modification de {name} effectuée')
             except sqlite.Error as e:
@@ -70,17 +81,17 @@ class Pydo(object):
         if self.selectByName(name):
             sql = (name,)
             try:
-                self.cur.execute("DELETE FROM mots WHERE mot=?", sql)
+                self.cur.execute(
+                    f"DELETE FROM {self.table[0]} WHERE {self.table[1]}=?", sql)
                 self.database.commit()
                 print(f'---> Le mot "{name}" effacé')
             except sqlite.Error as e:
                 print('---> Erreur lors de la suppression :', e)
 
-    def formatText(self, text:str) -> str:
+    def formatText(self, text: str) -> str:
         if len(text) > 0:
             unaccented_string = unidecode(text)
         return unaccented_string
-
 
 
 if __name__ == "__main__":
@@ -89,7 +100,7 @@ if __name__ == "__main__":
     path = './data/data.sq3'
 
     # Instanciation d'une BDD
-    bdd = Pydo(path)
+    bdd = Pydo(path, 'mots')
 
     test = bdd.selectAll()
     print(test, type(test))

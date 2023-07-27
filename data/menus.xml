@@ -25,7 +25,7 @@
         </lien>
         <lien>
             <label>Éditer les thématiques</label>
-            <command>None</command>
+            <command>editThemes</command>
         </lien>
     </menu>
     <menu categorie="Aide">

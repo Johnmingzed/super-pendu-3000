@@ -17,7 +17,7 @@ class Word(Pydo):
     "Définition d'un objet contenant les mots"
 
     def __init__(self, path: str) -> None:
-        super().__init__(path)
+        super().__init__(path, "mots")
         self.pool = []
         self.selectAll()
 
