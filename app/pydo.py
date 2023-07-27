@@ -1,4 +1,5 @@
 import sqlite3 as sqlite
+from unidecode import unidecode
 
 
 class Pydo(object):
@@ -9,8 +10,9 @@ class Pydo(object):
         self.cur = self.database.cursor()
 
     def create(self, name: str) -> None:
-        sql = (name.lower(),)
         if name != "":
+            name = self.formatText(name)
+            sql = (name.lower(),)
             try:
                 self.cur.execute(
                     "INSERT INTO mots(mot) VALUES(?)", sql
@@ -23,6 +25,7 @@ class Pydo(object):
             print("Vous ne pouvez pas enregistrer un chaîne vide.")
 
     def selectByName(self, name: str) -> tuple:
+        name = self.formatText(name)
         sql = (name.lower(),)
         try:
             req = self.cur.execute(
@@ -45,6 +48,7 @@ class Pydo(object):
 
     def update(self, name: str, data: str) -> None:
         if self.selectByName(name):
+            data = self.formatText(data)
             try:
                 sql = (data, name)
                 self.cur.execute("UPDATE mots SET mot=? WHERE mot=?", sql)
@@ -54,6 +58,7 @@ class Pydo(object):
                 print('---> Erreur lors de la mise à jour', e)
 
     def delete(self, name: str):
+        name = self.formatText(name)
         if self.selectByName(name):
             sql = (name,)
             try:
@@ -62,6 +67,12 @@ class Pydo(object):
                 print(f'---> Le mot "{name}" effacé')
             except sqlite.Error as e:
                 print('---> Erreur lors de la suppression :', e)
+
+    def formatText(self, text:str) -> str:
+        if len(text) > 0:
+            unaccented_string = unidecode(text)
+        return unaccented_string
+
 
 
 if __name__ == "__main__":
@@ -84,7 +95,9 @@ if __name__ == "__main__":
     bdd.create("Full Stack")
     testOne = bdd.selectByName('Javascript')
     print(testOne)
-    # update('Paul', 40)
+    bdd.update('base de données', 'base de donnees')
+    test = bdd.formatText('aàâäéèêëiÎoôöùüû')
+    print(test)
 
     print('Programme terminé')
     # database.close()

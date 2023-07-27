@@ -94,7 +94,7 @@ def main():
     canva = Canvas(root)
     canva.pack()
 
-    guess = DisplayWord(canva, 'developpeur')
+    guess = DisplayWord(canva, 'full-stack dev')
 
     root.bind('<Key>', key_press)
 

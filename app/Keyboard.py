@@ -35,28 +35,22 @@ class Keyboard(object):
         self.keyboard_width = self.key_size * self.key_per_line + \
             (self.offset + 1) * self.key_per_line
         self.canva.configure(width=self.keyboard_width,
-                             height=self.keyboard_height)
+                            height=self.keyboard_height)
 
     def draw_key(self, x: int = offset, y: int = offset, width: int = key_size, height: int = key_size, letter: str = 'A'):
         "Dessine une touche de clavier"
         self.round_rectangle(x, y, x+width, y+height,
-                             outline=self.color, fill=self.active_color, width=self.line_width, tags=letter)
+                            outline=self.color, fill=self.active_color, width=self.line_width, tags=letter)
         self.canva.create_text(x+width/2, y+height/2, text=letter.upper(), tags=letter,
-                               fill=self.color, font=('Consolas bold', 20))
-
-    def desactivate(self, key_id):
-        # print('Lettre', key_id, 'cliquée')
-        target = self.canva.find_withtag(key_id)[0]
-        self.canva.itemconfig(target, fill=self.used_color,
-                              outline=self.used_color)
+                            fill=self.color, font=('Consolas bold', 20))
 
     def draw_key_line(self, word: str, line: int = 0):
         "Dessine une rangée de touche de clavier"
         position = 0
         for letter in word:
             self.draw_key(self.offset + (self.key_size+self.offset) * position,
-                          self.offset + (self.key_size+self.offset) * line,
-                          letter=letter)
+                            self.offset + (self.key_size+self.offset) * line,
+                            letter=letter)
             position += 1
 
     def draw_keyboard(self):
@@ -64,6 +58,12 @@ class Keyboard(object):
         for word in self.key_list:
             self.draw_key_line(word, line)
             line += 1
+
+    def desactivate(self, key_id):
+        # print('Lettre', key_id, 'cliquée')
+        target = self.canva.find_withtag(key_id)[0]
+        self.canva.itemconfig(target, fill=self.used_color,
+                            outline=self.used_color)
 
     def key_row(self) -> list:
         "Répartis les lettres de l'alphabet sur plusieurs lignes"
@@ -80,25 +80,25 @@ class Keyboard(object):
 
     def round_rectangle(self, x1: int, y1: int, x2: int, y2: int, radius: int = 20, **kwargs):
         points = [x1+radius, y1,
-                  x1+radius, y1,
-                  x2-radius, y1,
-                  x2-radius, y1,
-                  x2, y1,
-                  x2, y1+radius,
-                  x2, y1+radius,
-                  x2, y2-radius,
-                  x2, y2-radius,
-                  x2, y2,
-                  x2-radius, y2,
-                  x2-radius, y2,
-                  x1+radius, y2,
-                  x1+radius, y2,
-                  x1, y2,
-                  x1, y2-radius,
-                  x1, y2-radius,
-                  x1, y1+radius,
-                  x1, y1+radius,
-                  x1, y1]
+                    x1+radius, y1,
+                    x2-radius, y1,
+                    x2-radius, y1,
+                    x2, y1,
+                    x2, y1+radius,
+                    x2, y1+radius,
+                    x2, y2-radius,
+                    x2, y2-radius,
+                    x2, y2,
+                    x2-radius, y2,
+                    x2-radius, y2,
+                    x1+radius, y2,
+                    x1+radius, y2,
+                    x1, y2,
+                    x1, y2-radius,
+                    x1, y2-radius,
+                    x1, y1+radius,
+                    x1, y1+radius,
+                    x1, y1]
         return self.canva.create_polygon(points, **kwargs, smooth=True)
 
 

@@ -87,6 +87,8 @@ class Main():
             self.wordlist.viewList()
             self.word_to_guess = self.wordlist.random()
 
+        print(self.word_to_guess)
+
         # Création de la barre de menus
         menu = ActionBar(self.window, self.xml_file, self)
 
@@ -94,7 +96,7 @@ class Main():
         self.pendu = Pendu(self.area_pendu, self.config)
 
         # Instanciation de l'objet Keyboard
-        self.clavier = Keyboard(self.area_keyboard, self.config, column=10)
+        self.clavier = Keyboard(self.area_keyboard, self.config, column=10, alphabet="abcdefghijklmnopqrstuvwxyz")
 
         # Instanciation du l'objet Displayword avec trnasmission du mot
         self.display = DisplayWord(
