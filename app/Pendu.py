@@ -1,3 +1,16 @@
+# Nom du fichier : Pendu.py
+# -*- coding: utf-8 -*-
+
+# Ce code est sous licence GPL 3 (GNU General Public License version 3).
+# Pour plus d'informations, consultez le fichier LICENSE ou visitez le site web :
+# https://www.gnu.org/licenses/gpl-3.0.html
+
+# Good icons created by Freepik - Flaticon
+# https://www.flaticon.com/free-icons/good
+
+# Bad icons created by Freepik - Flaticon
+# https://www.flaticon.com/free-icons/bad
+
 from tkinter import *
 
 
@@ -24,6 +37,8 @@ class Pendu(object):
             ('line', 250, 160, 280, 220)
         ]
         self.cursor = 0
+        self.img_victory = PhotoImage(file="./app/src/positive-vote.png")
+        self.img_defeat = PhotoImage(file="./app/src/negative-vote.png")
         if self.config:
             self.color = self.config['line']['color']
             self.width = self.config['line']['width']
@@ -34,6 +49,7 @@ class Pendu(object):
 
     def draw(self) -> bool:
         step = self.cursor
+        self.canva.delete('image')
         if step <= len(self.pattern) - 1:
             self.complete = False
             drawPendu = self.pattern[step]
@@ -52,6 +68,15 @@ class Pendu(object):
             self.canva.delete('all')
         return self.complete
 
+    def victory(self) -> None:
+        self.cursor = 0
+        self.canva.delete('all')
+        self.canva.create_image(200,200, image=self.img_victory, tags="image")
+
+    def defeat(self) -> None:
+        self.cursor = 0
+        self.canva.delete('all')
+        self.canva.create_image(200,200, image=self.img_defeat, tags="image")
 
 def main():
     root = Tk()
@@ -69,8 +94,14 @@ def main():
         playButton.configure(text=pendu_state)
 
     playButton = Button(root, text="Jouer", command=play)
-    playButton.pack(side=BOTTOM)
+    playButton.pack(side=RIGHT)
 
+    victoryButton = Button(root, text="Gagné", command=pendu.victory)
+    victoryButton.pack(side=LEFT)
+
+    victoryButton = Button(root, text="Perdu", command=pendu.defeat)
+    victoryButton.pack(side=LEFT)
+    
     root.mainloop()
 
 

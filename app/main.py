@@ -1,4 +1,12 @@
+# Nom du fichier : main.py
+# -*- coding: utf-8 -*-
+
+# Ce code est sous licence GPL 3 (GNU General Public License version 3).
+# Pour plus d'informations, consultez le fichier LICENSE ou visitez le site web :
+# https://www.gnu.org/licenses/gpl-3.0.html
+
 # Point d'entrée du programme
+
 
 import List
 import Theme
@@ -11,12 +19,20 @@ from Keyboard import Keyboard
 from ActionBar import ActionBar
 from tkinter import *
 from tkinter import messagebox
+import pygame
 import string
 
 
 class Main():
 
     def __init__(self) -> None:
+
+        # Chargement de PyGame pour le son
+        pygame.mixer.init()
+
+        # Définition des sons
+        self.victory_sound = "./app/src/sound-win.ogg"
+        self.defeat_sound = "./app/src/sound-loose.ogg"
 
         # Chemin vers les fichiers de configuration
         self.xml_file = "./data/menus.xml"
@@ -37,7 +53,7 @@ class Main():
         self.window = Tk()
         self.window.title("Super Pendu 3000")
         self.window.configure(background=bg_color)
-        self.window.iconbitmap("./data/favicon.ico")
+        self.window.iconbitmap("./app/src/favicon.ico")
 
         # Création du layout général
         self.layout = Canvas(
@@ -96,7 +112,8 @@ class Main():
         self.pendu = Pendu(self.area_pendu, self.config)
 
         # Instanciation de l'objet Keyboard
-        self.clavier = Keyboard(self.area_keyboard, self.config, column=10, alphabet="abcdefghijklmnopqrstuvwxyz")
+        self.clavier = Keyboard(self.area_keyboard, self.config,
+                                column=10, alphabet="abcdefghijklmnopqrstuvwxyz")
 
         # Instanciation du l'objet Displayword avec trnasmission du mot
         self.display = DisplayWord(
@@ -113,14 +130,14 @@ class Main():
         self.window.mainloop()
 
     def keyPlay(self, e: Event) -> None:
-        if not self.gameover() and not self.display.victory and e.char:
+        if not self.pendu.complete and not self.display.victory and e.char:
             # On vérifie que la touche entrée correspont à un caractère
             key = e.char
             if key in string.ascii_letters:
                 self.play(key)
 
     def mousePlay(self, e: Event) -> None:
-        if not self.gameover() and not self.display.victory:
+        if not self.pendu.complete and not self.display.victory:
             target_id = self.area_keyboard.find_closest(e.x, e.y)
             target_tags = self.area_keyboard.gettags(target_id)
             if len(target_tags) == 2:
@@ -137,8 +154,14 @@ class Main():
             self.victory()
             self.gameover()
 
+    def playSound(self, file: str):
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.play(loops=0)
+
     def gameover(self) -> None:
         if self.pendu.complete:
+            self.playSound(self.defeat_sound)
+            self.pendu.defeat()
             message = f"Désolé, mais vous avez perdu... Le mot était \"{self.word_to_guess}\".\nVoulez-vous faire une nouvelle partie ?"
             newgame = messagebox.askyesno("Game over", message)
             if newgame:
@@ -146,6 +169,15 @@ class Main():
             return 1
         else:
             return 0
+
+    def victory(self) -> None:
+        if self.display.victory:
+            self.playSound(self.victory_sound)
+            self.pendu.victory()
+            message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez-vous continuer ?"
+            newgame = messagebox.askyesno("Victoire !", message)
+            if newgame:
+                self.newgame(self.wordlist.random())
 
     def noRepeat(self, key: str) -> bool:
         "Vérification que la lettre n'a pas déjà été jouée"
@@ -156,13 +188,6 @@ class Main():
             self.letters_played.append(key)
             print("Lettres jouées :", self.letters_played)
             return 1
-
-    def victory(self) -> None:
-        if self.display.victory:
-            message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez-vous continuer ?"
-            newgame = messagebox.askyesno("Victoire !", message)
-            if newgame:
-                self.newgame(self.wordlist.random())
 
     def about(self) -> None:
         "Affichage de la boîte de dialogue 'À propos'"

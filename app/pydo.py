@@ -1,3 +1,11 @@
+# Nom du fichier : Pydo.py
+# -*- coding: utf-8 -*-
+
+# Ce code est sous licence GPL 3 (GNU General Public License version 3).
+# Pour plus d'informations, consultez le fichier LICENSE ou visitez le site web :
+# https://www.gnu.org/licenses/gpl-3.0.html
+
+
 import sqlite3 as sqlite
 from unidecode import unidecode
 
