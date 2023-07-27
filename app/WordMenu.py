@@ -15,7 +15,7 @@ class WordMenu(object):
     "Classe représentant une fenêtre de gestion des mots."
 
     def __init__(self, bdd: Pydo = None):
-        self.words = bdd
+        self.words = Pydo(bdd)
 
         # Création de la fenêtre
         self.word_menu = Toplevel()
@@ -23,6 +23,7 @@ class WordMenu(object):
         self.word_menu.geometry("350x350")
         self.word_menu.resizable(0, 1)
         self.word_menu.minsize(350, 250)
+        
 
         # Container pour la liste
         self.list_layout = Frame(self.word_menu)
@@ -152,8 +153,7 @@ if __name__ == '__main__':
     root.title("Super WordMenu 3000")
 
     sql_file = "./data/data.sq3"
-    bdd = Pydo(sql_file)
 
-    word_menu = WordMenu(bdd)
+    word_menu = WordMenu(sql_file)
 
     root.mainloop()

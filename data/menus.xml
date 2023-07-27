@@ -21,7 +21,7 @@
     <menu categorie="Édition">
         <lien>
             <label>Éditer les mots</label>
-            <command>None</command>
+            <command>editWords</command>
         </lien>
         <lien>
             <label>Éditer les thématiques</label>

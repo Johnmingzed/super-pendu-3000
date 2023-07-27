@@ -19,6 +19,7 @@ from Keyboard import Keyboard
 from ActionBar import ActionBar
 from tkinter import *
 from tkinter import messagebox
+from WordMenu import WordMenu
 import pygame
 import string
 
@@ -54,6 +55,7 @@ class Main():
         self.window.title("Super Pendu 3000")
         self.window.configure(background=bg_color)
         self.window.iconbitmap("./app/src/favicon.ico")
+        self.window.minsize(1010,400)
 
         # Création du layout général
         self.layout = Canvas(
@@ -89,6 +91,7 @@ class Main():
 
         # Lancement de la partie
         self.newgame()
+
 
     def newgame(self, word: str = None) -> None:
         print("Initialisation d'une nouvelle partie")
@@ -197,6 +200,13 @@ class Main():
     def close(self) -> None:
         "Quitter l'application"
         self.window.destroy()
+
+    def editWords(self) -> None:
+        "Editer la liste des mots disponibles"
+        self.word_edit = WordMenu(self.sql_file)
+        x, y = self.window.winfo_x(), self.window.winfo_y()
+        self.word_edit.word_menu.geometry(f"+{x+400}+{y+40}")
+        print(self.window.winfo_height(), self.window.winfo_width())
 
 
 if __name__ == "__main__":

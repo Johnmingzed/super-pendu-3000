@@ -44,36 +44,12 @@ class ActionBar(object):
 
     def create_command(self, command_name):
         # Vérifier si la méthode associée à la commande existe dans la classe ActionBar
-        if hasattr(self, command_name):
-            return getattr(self, command_name)
+        if hasattr(self.main, command_name):
+            return getattr(self.main, command_name)
         else:
             # Fonction de commande par défaut si la commande n'est pas définie
             return lambda: print(f"Commande '{command_name}' non définie.")
 
-#    def create_command(self, command_name):
-#        # Recherche de la fonction de commande dans l'ensemble des namespaces
-#        for namespace in [globals(), *globals().get("__builtins__", {})]:
-#            command_function = namespace.get(command_name)
-#            if callable(command_function):
-#                return command_function
-
-        # Fonction de commande par défaut si la commande n'est pas trouvée
-        return lambda: print(f"Commande '{command_name}' non définie.")
-        
-        "Rechercher la function call"
-
-    def about(self):
-        "Affichage de la boîte de dialogue 'À propos'"
-        self.main.about()
-
-    def close(self):
-        "Quitter l'application"
-        # self.window.destroy()
-        self.main.close()
-
-    def newgame(self):
-        "Lancer une nouvelle partie"
-        self.main.newgame()
 
 class Main():
 
