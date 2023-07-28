@@ -32,9 +32,9 @@ class ThemesMenu(WordMenu):
         self.right_layout.pack(expand=True, fill=Y)
 
         # Bouton de modification
-        self.list_save = Button(
+        self.list_button = Button(
             self.selection_layout, text="Sauvegarder", state=DISABLED, command=None)
-        self.list_save.pack(side=BOTTOM, fill=X, pady=(10, 0))
+        self.list_button.pack(side=BOTTOM, fill=X, pady=(10, 0))
 
         # Liste des mots
         selection_scrollbar = Scrollbar(self.selection_layout)
@@ -44,6 +44,7 @@ class ThemesMenu(WordMenu):
         self.createSelection()  # Remplissage de la liste
         self.selection.pack(side=RIGHT, fill=Y)
         selection_scrollbar.config(command=self.selection.yview)
+        self.selection.bind("<<ListboxSelect>>", self.createSelection)
 
     def createSelection(self):
         self.selection.delete(0, END)
@@ -51,6 +52,23 @@ class ThemesMenu(WordMenu):
                       key=lambda word: word[1])
         for word in list:
             self.selection.insert(END, word[1])
+
+    def clearSelection(self):
+        self.selection.select_clear(0, END)
+        self.selection.delete(0, END)
+        self.list_button.configure(state=DISABLED)
+        self.selection.configure(state=DISABLED)
+        print('clearSelection()')
+
+    def clearModif(self):
+        self.modify_word.delete(0, END)
+        self.liste.select_clear(0, END)
+        self.modif_button.configure(state=DISABLED)
+        self.delete_button.configure(state=DISABLED)
+        self.modify_word.configure(state=DISABLED)
+        self.word_to_modify = None
+        self.clearSelection()
+        print("ThemesMenu")
 
 
 if __name__ == '__main__':

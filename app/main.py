@@ -8,9 +8,6 @@
 # Point d'entrée du programme
 
 
-import List
-import Theme
-import random
 from Word import Word
 from Config import Config
 from Pendu import Pendu
@@ -20,6 +17,7 @@ from ActionBar import ActionBar
 from tkinter import *
 from tkinter import messagebox
 from WordMenu import WordMenu
+from ThemesMenu import ThemesMenu
 import pygame
 import string
 
@@ -210,7 +208,7 @@ class Main():
     def editThemes(self) -> None:
         "Editer la liste des themes disponibles"
         x, y = self.window.winfo_x(), self.window.winfo_y()
-        self.themes_edit = WordMenu(self.sql_file)
+        self.themes_edit = ThemesMenu(self.sql_file)
         self.themes_edit.word_menu.geometry(f"+{x+400}+{y+40}")
 
 
