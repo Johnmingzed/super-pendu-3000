@@ -55,7 +55,7 @@ class Main():
         self.window = Tk()
         self.window.title("Super Pendu 3000")
         self.window.configure(background=bg_color)
-        self.window.iconbitmap("./app/src/favicon.ico")
+        self.window.iconbitmap(os.path.join(main_dir, "src/favicon.ico"))
         self.window.minsize(1010, 400)
 
         # Création du layout général
