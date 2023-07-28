@@ -20,23 +20,26 @@ from WordMenu import WordMenu
 from ThemesMenu import ThemesMenu
 import pygame
 import string
+import os
 
 
 class Main():
 
     def __init__(self) -> None:
 
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+
         # Chargement de PyGame pour le son
         pygame.mixer.init()
 
         # Définition des sons
-        self.victory_sound = "./app/src/sound-win.ogg"
-        self.defeat_sound = "./app/src/sound-loose.ogg"
+        self.victory_sound = os.path.join(main_dir, "src/sound-win.ogg")
+        self.defeat_sound = os.path.join(main_dir, "src/sound-loose.ogg")
 
         # Chemin vers les fichiers de configuration
-        self.xml_file = "./data/menus.xml"
-        self.json_file = "./data/conf.json"
-        self.sql_file = "./data/data.sq3"
+        self.xml_file = os.path.join(main_dir, "data/menus.xml")
+        self.json_file = os.path.join(main_dir, "data/conf.json")
+        self.sql_file = os.path.join(main_dir, "data/data.sq3")
 
         # Chargement du fichier de configuration
         self.config = Config(self.json_file).toDict()
@@ -53,7 +56,7 @@ class Main():
         self.window.title("Super Pendu 3000")
         self.window.configure(background=bg_color)
         self.window.iconbitmap("./app/src/favicon.ico")
-        self.window.minsize(1010,400)
+        self.window.minsize(1010, 400)
 
         # Création du layout général
         self.layout = Canvas(
@@ -89,7 +92,6 @@ class Main():
 
         # Lancement de la partie
         self.newgame()
-
 
     def newgame(self, word: str = None) -> None:
         print("Initialisation d'une nouvelle partie")

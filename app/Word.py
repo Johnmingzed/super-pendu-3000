@@ -41,7 +41,10 @@ class Word(Pydo):
         return len(self.pool)
 
 if __name__ == "__main__":
-    mot = Word("./data/data.sq3")
+    import os
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
+    sql_file = os.path.join(main_dir, "data/data.sq3")
+    mot = Word(sql_file)
 
     mot.viewList()
     mot_random = mot.random()

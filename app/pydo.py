@@ -10,6 +10,7 @@ import sqlite3 as sqlite
 from unidecode import unidecode
 
 
+
 class Pydo(object):
     "Définition d'un objet Pydo permettant les actions de CRUD sur une basse de données SQLite3"
 
@@ -95,9 +96,12 @@ class Pydo(object):
 
 
 if __name__ == "__main__":
+    import os
+
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
 
     # Selection de la base de données
-    path = './data/data.sq3'
+    path = os.path.join(main_dir, "data.sq3")
 
     # Instanciation d'une BDD
     bdd = Pydo(path, 'mots')

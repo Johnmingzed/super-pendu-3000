@@ -37,7 +37,8 @@ def main():
     """
     Tests sur la classe Config
     """
-    json_file = "./data/conf.json"
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
+    json_file = os.path.join(main_dir, "data/conf.json")
     configObject = Config(json_file)    # Création d'un objet
     config = configObject.toDict()      # Conversion en dictionnaire
     configObject.listContent()
@@ -46,4 +47,6 @@ def main():
 
 
 if __name__ == "__main__":
+    import os
+
     main()

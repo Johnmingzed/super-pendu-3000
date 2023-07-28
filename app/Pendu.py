@@ -12,12 +12,15 @@
 # https://www.flaticon.com/free-icons/bad
 
 from tkinter import *
+import os
 
 
 class Pendu(object):
     "Définition d'un objet graphique pendu"
 
     def __init__(self, canva: Canvas, config: dict = None) -> None:
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+
         self.config = config
         self.canva = canva
         self.canva.configure(width=400, height=400)
@@ -37,8 +40,10 @@ class Pendu(object):
             ('line', 250, 160, 280, 220)
         ]
         self.cursor = 0
-        self.img_victory = PhotoImage(file="./app/src/positive-vote.png")
-        self.img_defeat = PhotoImage(file="./app/src/negative-vote.png")
+        self.img_victory = PhotoImage(
+            file=os.path.join(main_dir, "src/positive-vote.png"))
+        self.img_defeat = PhotoImage(
+            file=os.path.join(main_dir, "src/negative-vote.png"))
         if self.config:
             self.color = self.config['line']['color']
             self.width = self.config['line']['width']
@@ -71,12 +76,13 @@ class Pendu(object):
     def victory(self) -> None:
         self.cursor = 0
         self.canva.delete('all')
-        self.canva.create_image(200,200, image=self.img_victory, tags="image")
+        self.canva.create_image(200, 200, image=self.img_victory, tags="image")
 
     def defeat(self) -> None:
         self.cursor = 0
         self.canva.delete('all')
-        self.canva.create_image(200,200, image=self.img_defeat, tags="image")
+        self.canva.create_image(200, 200, image=self.img_defeat, tags="image")
+
 
 def main():
     root = Tk()
@@ -101,7 +107,7 @@ def main():
 
     victoryButton = Button(root, text="Perdu", command=pendu.defeat)
     victoryButton.pack(side=LEFT)
-    
+
     root.mainloop()
 
 

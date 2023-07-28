@@ -148,11 +148,12 @@ class WordMenu(object):
 
 
 if __name__ == '__main__':
+    import os
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
+    sql_file = os.path.join(main_dir, "data/data.sq3")
 
     root = Tk()
     root.title("Super WordMenu 3000")
-
-    sql_file = "./data/data.sq3"
 
     word_menu = WordMenu(sql_file)
 

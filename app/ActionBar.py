@@ -55,8 +55,10 @@ class Main():
 
     def __init__(self) -> None:
 
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+        
         # Chemin vers le fichier XML
-        xml_file = "./data/menus.xml"
+        xml_file = os.path.join(main_dir, "./data/menus.xml")
 
         # Fenêtre principale
         window = Tk()
@@ -79,4 +81,6 @@ class Main():
 
 
 if __name__ == "__main__":
+    import os
+
     main = Main()
