@@ -16,6 +16,7 @@ class ThemesMenu(WordMenu):
     "Classe représentant une fenêtre de gestion des themes."
 
     def __init__(self, bdd: str):
+        self.radio_buttons = []
         super().__init__(bdd, 'thèmes')
         self.words_to_assign = Pydo(bdd, 'mots')
 
@@ -33,7 +34,7 @@ class ThemesMenu(WordMenu):
 
         # Bouton de modification
         self.list_button = Button(
-            self.selection_layout, text="Sauvegarder", state=DISABLED, command=None)
+            self.selection_layout, text="Sauvegarder", state=DISABLED, command=self.saveSelection)
         self.list_button.pack(side=BOTTOM, fill=X, pady=(10, 0))
 
         # Liste des mots
@@ -41,34 +42,73 @@ class ThemesMenu(WordMenu):
         selection_scrollbar.pack(side=RIGHT, fill=Y)
         self.selection = Listbox(self.selection_layout, height=15, selectmode=MULTIPLE,
                                  yscrollcommand=selection_scrollbar.set)
-        self.createSelection()  # Remplissage de la liste
         self.selection.pack(side=RIGHT, fill=Y)
         selection_scrollbar.config(command=self.selection.yview)
-        self.selection.bind("<<ListboxSelect>>", self.createSelection)
 
-    def createSelection(self):
+        # Chargement des mots à la sélection d'un thème
+        self.liste.bind("<<ListboxSelect>>",
+                        lambda event: self.selectTheme(event, source='themes'))
+
+        # Stockage de l'index du thème sélectionné
+        self.theme = None
+
+        self.liste.destroy()
+        self.displayThemes()
+        print("selection de radios", self.radio_buttons)
+
+    def displayThemes(self):
+        self.clearThemes()
+        self.var = StringVar()
+        list = sorted(self.words.selectAll(), key=lambda word: word[1])
+        for word in list:
+            rb = Radiobutton(
+                self.list_layout, text=word[1], variable=self.var, value=word[1], command=self.selectTheme)
+            rb.pack(anchor=W)
+            self.radio_buttons.append(rb)
+        self.var.set(None)
+
+    def selectTheme(self, event=None):
+        self.theme = self.var.get()
+        self.createSelection()
+        self.activeModify(self.theme)
+
+    def createList(self):
+        self.displayThemes()
+
+    def clearThemes(self):
+        if self.radio_buttons:
+            for rb in self.radio_buttons:
+                rb.destroy()
+            self.radio_buttons = []
+
+    def createSelection(self, event=None):
+        self.selection.configure(state=NORMAL)
         self.selection.delete(0, END)
         list = sorted(self.words_to_assign.selectAll(),
                       key=lambda word: word[1])
         for word in list:
             self.selection.insert(END, word[1])
+        self.list_button.configure(state=NORMAL)
 
     def clearSelection(self):
         self.selection.select_clear(0, END)
         self.selection.delete(0, END)
         self.list_button.configure(state=DISABLED)
         self.selection.configure(state=DISABLED)
-        print('clearSelection()')
+        self.theme = None
 
     def clearModif(self):
         self.modify_word.delete(0, END)
-        self.liste.select_clear(0, END)
         self.modif_button.configure(state=DISABLED)
         self.delete_button.configure(state=DISABLED)
         self.modify_word.configure(state=DISABLED)
         self.word_to_modify = None
         self.clearSelection()
-        print("ThemesMenu")
+        self.displayThemes()
+
+    def saveSelection(self, event=None):
+        to_save = self.selection.curselection()
+        print('to_save')
 
 
 if __name__ == '__main__':

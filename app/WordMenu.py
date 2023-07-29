@@ -93,16 +93,19 @@ class WordMenu(object):
         scrollbar.config(command=self.liste.yview)
         self.liste.bind("<<ListboxSelect>>", self.displayWord)
 
-    def displayWord(self, event):
+    def displayWord(self, event=None):
         selection = self.liste.curselection()
         if selection:
             word = self.liste.get(selection[0])
-            self.word_to_modify = word
-            self.modify_word.configure(state=NORMAL)
-            self.modif_button.configure(state=NORMAL)
-            self.delete_button.configure(state=NORMAL)
-            self.modify_word.delete(0, END)
-            self.modify_word.insert(0, word)
+            self.activeModify(word)
+
+    def activeModify(self, word):
+        self.word_to_modify = word
+        self.modify_word.configure(state=NORMAL)
+        self.modif_button.configure(state=NORMAL)
+        self.delete_button.configure(state=NORMAL)
+        self.modify_word.delete(0, END)
+        self.modify_word.insert(0, word)
 
     def createList(self):
         self.liste.delete(0, END)
