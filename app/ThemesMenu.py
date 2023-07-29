@@ -53,8 +53,8 @@ class ThemesMenu(WordMenu):
         self.theme = None
 
         self.liste.destroy()
+        self.scrollbar.destroy()
         self.displayThemes()
-        print("selection de radios", self.radio_buttons)
 
     def displayThemes(self):
         self.clearThemes()
@@ -108,7 +108,12 @@ class ThemesMenu(WordMenu):
 
     def saveSelection(self, event=None):
         to_save = self.selection.curselection()
-        print('to_save')
+        words_to_save = []
+        for i in to_save:
+            words_to_save.append(self.selection.get(i))
+        print(self.theme, "with", words_to_save)
+        self.words_to_assign.saveList(words_to_save, self.theme)
+        self.clearModif()
 
 
 if __name__ == '__main__':

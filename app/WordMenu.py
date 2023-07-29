@@ -82,15 +82,15 @@ class WordMenu(object):
         self.enter_word.pack(side=TOP, fill=X, pady=(0, 10))
 
         # Création d'un scrollbar
-        scrollbar = Scrollbar(self.list_layout)
-        scrollbar.pack(side=RIGHT, fill=Y)
+        self.scrollbar = Scrollbar(self.list_layout)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
 
         # Création de la liste des mots
         self.liste = Listbox(self.list_layout, height=15,
-                             yscrollcommand=scrollbar.set)
+                             yscrollcommand=self.scrollbar.set)
         self.createList()  # Remplissage de la liste
         self.liste.pack(side=LEFT, fill=Y)
-        scrollbar.config(command=self.liste.yview)
+        self.scrollbar.config(command=self.liste.yview)
         self.liste.bind("<<ListboxSelect>>", self.displayWord)
 
     def displayWord(self, event=None):
