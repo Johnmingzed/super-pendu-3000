@@ -69,6 +69,28 @@ class Pydo(object):
         except sqlite.Error as e:
             print('---> Erreur lors de la séléction :', e)
 
+    def selectAllByAssociation(self, subject: str, associate_to: str) -> list:
+        "Sélection de toutes les éléments de la table 'subject' associées à l'élément 'associate_to' de l'autre table"
+        if subject == "mots":
+            search_for = self.MOTS
+            into = self.THEMES
+        elif subject == "themes":
+            search_for = self.THEMES
+            into = self.MOTS
+        association_id = self.selectByName(associate_to, into[0], into[1])[0]
+        print(
+            f"On recherche les {search_for[0]} associées au {into[1]} : [{association_id}]{associate_to}")
+        try:
+            req = self.cur.execute(
+                f"SELECT {search_for[0]}.id_{search_for[0]}, {search_for[0]}.{search_for[1]} \
+                FROM {search_for[0]} \
+                INNER JOIN mots_themes \
+                ON mots_themes.id_{search_for[0]}={search_for[0]}.id_{search_for[0]} \
+                WHERE mots_themes.id_{into[0]} = {association_id}")
+            return req.fetchall()
+        except sqlite.Error as e:
+            print('---> Erreur lors de la séléction :', e)
+
     def selectAll(self, table: str = None, column: str = None) -> list:
         table, column = self.define(table, column)
         try:
@@ -124,7 +146,8 @@ class Pydo(object):
                         f"INSERT INTO 'mots_themes' ('id_themes', 'id_mots') VALUES(?,?)", sql
                     )
                     self.database.commit()
-                    print(f"---> L'association {id_theme[1]}[{id_mot[1]}] a bien été ajouté.")
+                    print(
+                        f"---> L'association {id_theme[1]}[{id_mot[1]}] a bien été ajouté.")
                 except sqlite.Error as e:
                     print('---> Erreur lors de la création :', e)
 
@@ -173,6 +196,8 @@ if __name__ == "__main__":
     test = bdd.formatText('aàâäéèêëiÎoôöùüû')
     print(test)
     bdd.saveList('chats', ['python', 'scrum', 'apache'])
+    test_theme = bdd.selectAllByAssociation('mots', 'chats')
+    print(test_theme)
 
     print('Programme terminé')
     # database.close()

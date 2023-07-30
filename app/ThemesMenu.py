@@ -52,9 +52,13 @@ class ThemesMenu(WordMenu):
         # Stockage de l'index du thème sélectionné
         self.theme = None
 
+        # Modification du message d'informations
+        infos = f"Vous pouvez directement ajouter un nouveau {self.table[:-1]} dans le champ situé en haut à gauche (les accents seront automatiquement retirés).\n\nSélectionner un {self.table[:-1]} dans la liste de gauche pour le modifier ou le supprimer via les boutons ci-dessous ou éditer la liste de mots associés via la liste sur la droite."
+        self.info.configure(text=infos)
+
+        # Nettoyage des éléments inutils générés par WordMenu
         self.liste.destroy()
         self.scrollbar.destroy()
-        self.displayThemes()
 
     def displayThemes(self):
         self.clearThemes()
@@ -89,6 +93,17 @@ class ThemesMenu(WordMenu):
         for word in list:
             self.selection.insert(END, word[1])
         self.list_button.configure(state=NORMAL)
+        self.highlightSelection('mots')
+
+    def highlightSelection(self, subject:str):
+        higlight = self.words_to_assign.selectAllByAssociation(subject, self.theme)
+        selection = self.selection.get(0, END)
+        for word_in_selection in selection:
+            word_to_verify = word_in_selection
+            for word in higlight:
+                if word_to_verify == word[1]:
+                    index = selection.index(word_to_verify)
+                    self.selection.select_set(index)
 
     def clearSelection(self):
         self.selection.select_clear(0, END)
@@ -112,7 +127,7 @@ class ThemesMenu(WordMenu):
         for i in to_save:
             words_to_save.append(self.selection.get(i))
         print(self.theme, "with", words_to_save)
-        self.words_to_assign.saveList(words_to_save, self.theme)
+        self.words_to_assign.saveList(self.theme, words_to_save)
         self.clearModif()
 
 
