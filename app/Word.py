@@ -16,15 +16,25 @@ import random
 class Word(Pydo):
     "Définition d'un objet contenant les mots"
 
-    def __init__(self, path: str) -> None:
-        super().__init__(path, "mots")
+    def __init__(self, path: str, theme:str = None) -> None:
+        if theme:
+            self.theme_for_init = theme
+            table = "themes"
+        else:
+            self.theme_for_init = None
+            table = "mots"
+        super().__init__(path, table)
         self.pool = []
+        if not theme:
+            self.base = super().selectAll()
+        else:
+            self.base = self.selectAllByAssociation("mots", self.theme_for_init)
         self.selectAll()
 
     def selectAll(self) -> list:
         "Réinitialise la liste en récupérant tout les mots en base de données"
         self.pool.clear()
-        for tuple in super().selectAll():
+        for tuple in self.base:
             self.pool.append(tuple[1])
         return self.pool
 
@@ -44,8 +54,8 @@ if __name__ == "__main__":
     import os
     main_dir = os.path.split(os.path.abspath(__file__))[0]
     sql_file = os.path.join(main_dir, "data/data.sq3")
-    mot = Word(sql_file)
-
+    mot = Word(sql_file, 'devops')
+    # mot = Word(sql_file)
     mot.viewList()
     mot_random = mot.random()
     print(mot_random)

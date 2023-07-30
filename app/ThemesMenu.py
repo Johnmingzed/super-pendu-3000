@@ -17,6 +17,7 @@ class ThemesMenu(WordMenu):
 
     def __init__(self, bdd: str):
         self.radio_buttons = []
+        self.scrollable_liste = Frame()
         super().__init__(bdd, 'thèmes')
         self.words_to_assign = Pydo(bdd, 'mots')
 
@@ -45,9 +46,23 @@ class ThemesMenu(WordMenu):
         self.selection.pack(side=RIGHT, fill=Y)
         selection_scrollbar.config(command=self.selection.yview)
 
-        # Chargement des mots à la sélection d'un thème
-        self.liste.bind("<<ListboxSelect>>",
-                        lambda event: self.selectTheme(event, source='themes'))
+        # Remplacement de la liste de WordMenu par une Frame pour stocker les thêmes
+        self.liste.destroy()
+        self.scrollbar.destroy()
+
+        self.liste = Canvas(self.list_layout)
+        self.scrollbar = Scrollbar(
+            self.list_layout, orient=VERTICAL, command=self.liste.yview)
+        self.scrollable_liste = Frame(self.liste)
+        self.scrollable_liste.bind("<Configure>", lambda e: self.liste.configure(
+            scrollregion=self.liste.bbox("all")
+        )
+        )
+        self.liste.create_window((0,0), window=self.scrollable_liste, anchor=NW)
+        self.liste.configure(yscrollcommand=self.scrollbar.set)
+        self.displayThemes()
+        self.liste.pack(side=LEFT, fill=Y)
+        self.scrollbar.pack(side=RIGHT, fill=Y)
 
         # Stockage de l'index du thème sélectionné
         self.theme = None
@@ -56,20 +71,18 @@ class ThemesMenu(WordMenu):
         infos = f"Vous pouvez directement ajouter un nouveau {self.table[:-1]} dans le champ situé en haut à gauche (les accents seront automatiquement retirés).\n\nSélectionner un {self.table[:-1]} dans la liste de gauche pour le modifier ou le supprimer via les boutons ci-dessous ou éditer la liste de mots associés via la liste sur la droite."
         self.info.configure(text=infos)
 
-        # Nettoyage des éléments inutils générés par WordMenu
-        self.liste.destroy()
-        self.scrollbar.destroy()
-
     def displayThemes(self):
         self.clearThemes()
         self.var = StringVar()
         list = sorted(self.words.selectAll(), key=lambda word: word[1])
         for word in list:
             rb = Radiobutton(
-                self.list_layout, text=word[1], variable=self.var, value=word[1], command=self.selectTheme)
+                self.scrollable_liste, text=word[1], variable=self.var, value=word[1], command=self.selectTheme)
             rb.pack(anchor=W)
             self.radio_buttons.append(rb)
         self.var.set(None)
+        self.liste.update_idletasks()
+        self.liste.configure(width=self.scrollable_liste.winfo_reqwidth())
 
     def selectTheme(self, event=None):
         self.theme = self.var.get()
@@ -95,8 +108,9 @@ class ThemesMenu(WordMenu):
         self.list_button.configure(state=NORMAL)
         self.highlightSelection('mots')
 
-    def highlightSelection(self, subject:str):
-        higlight = self.words_to_assign.selectAllByAssociation(subject, self.theme)
+    def highlightSelection(self, subject: str):
+        higlight = self.words_to_assign.selectAllByAssociation(
+            subject, self.theme)
         selection = self.selection.get(0, END)
         for word_in_selection in selection:
             word_to_verify = word_in_selection

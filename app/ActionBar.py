@@ -21,14 +21,14 @@ class ActionBar(object):
         self.window = window
         self.main = main_instance
         # Création de la barre de menu
-        action_bar = Menu(self.window)
+        self.action_bar = Menu(self.window)
 
         # Création des menus principaux
         for submenu in menus:
             # On peut accéder aux attributs de chaque élément avec la syntaxe element.attrib
             # Par exemple, si l'élément a un attribut "id", on peut l'obtenir avec element.attrib["id"]
-            menu = Menu(action_bar, tearoff=0)
-            action_bar.add_cascade(
+            menu = Menu(self.action_bar, tearoff=0)
+            self.action_bar.add_cascade(
                 label=submenu.attrib['categorie'], menu=menu)
 
             # Création des liens des menus
@@ -36,13 +36,16 @@ class ActionBar(object):
             for link in submenu:
                 label = link.find("label").text
                 command = link.find("command").text
-                menu.add_command(
-                    label=label, command=self.create_command(command))
+                if command == 'choosetheme':
+                    self.addOptions(menu, command, label)
+                else:
+                    menu.add_command(
+                        label=label, command=self.create_command(command))
 
         # Affichage de la barre de menu
-        self.window.config(menu=action_bar)
+        self.window.config(menu=self.action_bar)
 
-    def create_command(self, command_name):
+    def create_command(self, command_name: str):
         # Vérifier si la méthode associée à la commande existe dans la classe ActionBar
         if hasattr(self.main, command_name):
             return getattr(self.main, command_name)
@@ -50,15 +53,26 @@ class ActionBar(object):
             # Fonction de commande par défaut si la commande n'est pas définie
             return lambda: print(f"Commande '{command_name}' non définie.")
 
+    def addOptions(self, menu: Menu, command: str, label: str) -> None:
+        if command == 'choosetheme':
+            theme_menu = Menu(menu, tearoff=0)
+            menu.add_cascade(menu=theme_menu, label=label)
+            self.main
+            radio = StringVar()
+            theme_menu.add_radiobutton(label='Test1', variable=radio, value=1)
+            theme_menu.add_radiobutton(label='Test2', variable=radio, value=2)
+            theme_menu.add_radiobutton(label='Test2', variable=radio, value=3)
+
 
 class Main():
 
     def __init__(self) -> None:
 
         main_dir = os.path.split(os.path.abspath(__file__))[0]
-        
+
         # Chemin vers le fichier XML
         xml_file = os.path.join(main_dir, "./data/menus.xml")
+        sql_file = os.path.join(main_dir, "data/data.sq3")
 
         # Fenêtre principale
         window = Tk()
@@ -66,6 +80,9 @@ class Main():
 
         # Création de la barre de menus
         menu = ActionBar(window, xml_file, self)
+
+        # Création des Mots à parti d'un thème
+        self.wordlist = Word(sql_file, 'devops')
 
         # Rendu de l'application
         window.mainloop()
@@ -79,8 +96,12 @@ class Main():
     def newgame(self):
         print('Newgame')
 
+    def choosetheme(self):
+        print('Thematique')
+
 
 if __name__ == "__main__":
     import os
+    from Word import Word
 
     main = Main()

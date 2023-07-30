@@ -44,6 +44,11 @@ class Main():
         # Chargement du fichier de configuration
         self.config = Config(self.json_file).toDict()
 
+        # Sélection du theme par defaut
+        if hasattr(self, "config"):
+            self.default_theme = (
+                self.config['theme']['id'], self.config['theme']['name'])
+
         # Palette de couleurs
         if hasattr(self, "config"):
             bg_color = self.config['canevas']
@@ -87,8 +92,8 @@ class Main():
             self.area_info, background=bg_color2, highlightthickness=0)
         self.area_keyboard.pack(expand=1)
 
-        # Création des Mots
-        self.wordlist = Word(self.sql_file)
+        # Création des Mots à parti d'un thème
+        self.wordlist = Word(self.sql_file, self.default_theme[1])
 
         # Lancement de la partie
         self.newgame()
@@ -102,10 +107,11 @@ class Main():
             self.word_to_guess = word
         else:
             print('Remise à zero de la liste des mots')
-            self.wordlist.selectAll()
+            self.wordlist = Word(self.sql_file, self.default_theme[1])
             self.wordlist.viewList()
             self.word_to_guess = self.wordlist.random()
 
+        # Pour debug
         print(self.word_to_guess)
 
         # Création de la barre de menus
@@ -181,6 +187,7 @@ class Main():
             newgame = messagebox.askyesno("Victoire !", message)
             if newgame:
                 self.newgame(self.wordlist.random())
+            # Prévoir le fait de terminer la liste
 
     def noRepeat(self, key: str) -> bool:
         "Vérification que la lettre n'a pas déjà été jouée"

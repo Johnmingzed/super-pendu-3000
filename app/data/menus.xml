@@ -7,7 +7,7 @@
         </lien>
         <lien>
             <label>Choisir une thématique</label> <!-- développeur, UI designer, ...etc-->
-            <command>None</command>
+            <command>choosetheme</command>
         </lien>
         <lien>
             <label>Choisir une apparence</label>
