@@ -13,16 +13,19 @@ from unidecode import unidecode
 class Pydo(object):
     "Définition d'un objet Pydo permettant les actions de CRUD sur une basse de données SQLite3"
 
+    THEMES = ['themes', 'theme']
+    MOTS = ['mots', 'mot']
+
     def __init__(self, path: str, table: str) -> None:
-        themes = ['themes', 'theme']
-        mots = ['mots', 'mot']
+        # themes = ['themes', 'theme']
+        # mots = ['mots', 'mot']
 
         self.database = sqlite.connect(path)
         self.cur = self.database.cursor()
         if table == 'themes':
-            self.table = themes
+            self.table = self.THEMES
         elif table == 'mots':
-            self.table = mots
+            self.table = self.MOTS
         else:
             print("Aucune table correspondante dans la base de données")
             exit()
@@ -33,7 +36,7 @@ class Pydo(object):
         if not column:
             column = self.table[1]
         return (table, column)
-    
+
     def create(self, name: str, table: str = None, column: str = None) -> None:
         table, column = self.define(table, column)
         if name != "":
@@ -105,18 +108,42 @@ class Pydo(object):
             unaccented_string = unidecode(text)
         return unaccented_string
 
+    def saveList(self, theme: str, words: list = None) -> None:
+        # On reparts d'une liste vierge dont on récupère l'ID
+        id_theme = self.cleanList(theme)
+        print(id_theme)
+        # On récupère les ID correspondantes au mot de la liste fournie
+        words_list = words
+        if words_list:
+            for word in words_list:
+                id_mot = self.selectByName(word, self.MOTS[0], self.MOTS[1])
+                # On les enregistre dans la table mots_themes en les associations à l'ID du thème
+                sql = (id_theme[0], id_mot[0])
+                try:
+                    self.cur.execute(
+                        f"INSERT INTO 'mots_themes' ('id_themes', 'id_mots') VALUES(?,?)", sql
+                    )
+                    self.database.commit()
+                    print(f"---> L'association {id_theme[1]}[{id_mot[1]}] a bien été ajouté.")
+                except sqlite.Error as e:
+                    print('---> Erreur lors de la création :', e)
 
-    def saveList(self, words: list, theme: str) -> None:
-        id_theme = self.selectByName(theme)
+    def cleanList(self, theme: str) -> int:
+        table = self.THEMES[0]
+        column = self.THEMES[1]
+        id_theme = self.selectByName(theme, table, column)
         sql = (id_theme[0],)
 
         try:
             self.cur.execute(
                 f"DELETE FROM mots_themes WHERE id_themes=?", sql
             )
+            self.database.commit()
+            print(f"Associations avec {theme} nettoyées")
         except sqlite.Error as e:
             print('---> Erreur lors de la suppression :', e)
-        pass
+
+        return (id_theme)
 
 
 if __name__ == "__main__":
@@ -145,6 +172,7 @@ if __name__ == "__main__":
     bdd.update('base de données', 'base de donnees')
     test = bdd.formatText('aàâäéèêëiÎoôöùüû')
     print(test)
+    bdd.saveList('chats', ['python', 'scrum', 'apache'])
 
     print('Programme terminé')
     # database.close()
