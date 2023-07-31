@@ -15,22 +15,35 @@ import json
 
 
 class Config:
-    def __init__(self, json_file: str) -> None:
+    def __init__(self, json_file: str, main_instance=None) -> None:
         with open(json_file) as file:
             json_data = json.load(file)
         self.json_data = json_data
+        self.main = main_instance
+        self.json_file = json_file
 
     def toDict(self) -> dict:
         "Convertit l'objet en dictionnaire"
         return self.json_data
 
     def listContent(self) -> None:
+        "Affiche le contenu de l'objet"
         print('Voici le contenu de la configuration')
         print(self.json_data)
 
     def toJSON(self):
+        "Convertit l'objet en JSON"
         # La méthode magique __dict__ transforme l'objet en dictionnaire (?)
         return json.dumps(self.__dict__)
+
+    def save(self, to_save:tuple) -> None:
+        "Modifie et sauvegarde l'objet"
+        self.main.config.update(theme={'id':to_save[0], 'name':to_save[1]})
+        save_json_data = json.dumps(self.main.config, indent=4)
+        with open(self.json_file, "w") as file:
+            file.write(save_json_data)
+        print('💾 Configuration sauvegardée')
+
 
 
 def main():

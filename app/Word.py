@@ -47,7 +47,7 @@ class Word(Pydo):
 
     def viewList(self) -> int:
         "Affiche le nombre d'élément restant dans la liste"
-        print(self.pool, '\nReste :', len(self.pool))
+        print("📚 ",self.pool, '\nReste :', len(self.pool))
         return len(self.pool)
 
     def availableThemes(self) -> list:

@@ -42,7 +42,9 @@ class Main():
         self.sql_file = os.path.join(main_dir, "data/data.sq3")
 
         # Chargement du fichier de configuration
-        self.config = Config(self.json_file).toDict()
+        self.config_constructor = Config(self.json_file, self)
+        self.config = self.config_constructor.toDict()
+
 
         # Sélection du theme par defaut
         if hasattr(self, "config"):
@@ -99,20 +101,20 @@ class Main():
         self.newgame()
 
     def newgame(self, word: str = None) -> None:
-        print("Initialisation d'une nouvelle partie")
+        print("✨ Initialisation d'une nouvelle partie")
 
         # Définition du mot à trouver
         if word:
             print('Nouveau mot fournit')
             self.word_to_guess = word
         else:
-            print('Remise à zero de la liste des mots')
+            print('🔁 Remise à zero de la liste des mots')
             self.wordlist = Word(self.sql_file, self.default_theme[1])
             self.wordlist.viewList()
             self.word_to_guess = self.wordlist.random()
 
         # Pour debug
-        print(self.word_to_guess)
+        print("➡️ ", self.word_to_guess)
 
         # Création de la barre de menus
         self.menu = ActionBar(self.window, self.xml_file, self, self.wordlist)
@@ -137,7 +139,6 @@ class Main():
         # Tentative du joueur
         self.window.bind('<Key>', self.keyPlay)
         self.window.bind('<Button>', self.mousePlay)
-
 
     def keyPlay(self, e: Event) -> None:
         if not self.pendu.complete and not self.display.victory and e.char:
@@ -233,7 +234,8 @@ class Main():
         self.default_theme = themes
         set_menu = str(self.default_theme[0]) + " " + self.default_theme[1]
         self.menu.selected_theme.set(set_menu)
-        # A faire : Ajouter la sauvegarde dans le fichier JSON
+        # Sauvegarde de la thématique dans le fichier JSON
+        self.config_constructor.save(self.default_theme)
         self.newgame()
 
 
