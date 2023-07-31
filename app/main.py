@@ -184,7 +184,6 @@ class Main():
         if self.display.victory:
             self.playSound(self.victory_sound)
             self.pendu.victory()
-            # A faire : Prévoir le fait de terminer la liste
             if len(self.wordlist.pool):
                 message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\
                 Voulez-vous continuer ?"
