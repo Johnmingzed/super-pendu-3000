@@ -12,11 +12,10 @@ from Pydo import Pydo
 import random
 
 
-
 class Word(Pydo):
     "Définition d'un objet contenant les mots"
 
-    def __init__(self, path: str, theme:str = None) -> None:
+    def __init__(self, path: str, theme: str = None) -> None:
         if theme:
             self.theme_for_init = theme
             table = "themes"
@@ -28,7 +27,8 @@ class Word(Pydo):
         if not theme:
             self.base = super().selectAll()
         else:
-            self.base = self.selectAllByAssociation("mots", self.theme_for_init)
+            self.base = self.selectAllByAssociation(
+                "mots", self.theme_for_init)
         self.selectAll()
 
     def selectAll(self) -> list:
@@ -47,13 +47,14 @@ class Word(Pydo):
 
     def viewList(self) -> int:
         "Affiche le nombre d'élément restant dans la liste"
-        print(self.pool,'\nReste :', len(self.pool))
+        print(self.pool, '\nReste :', len(self.pool))
         return len(self.pool)
-    
+
     def availableThemes(self) -> list:
         "Affiche la liste des themes disponible"
         themes = super().selectAll('themes')
         return themes
+
 
 if __name__ == "__main__":
     import os

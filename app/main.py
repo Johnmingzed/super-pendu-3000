@@ -117,6 +117,9 @@ class Main():
         # Création de la barre de menus
         self.menu = ActionBar(self.window, self.xml_file, self, self.wordlist)
 
+        # Pointage du thème en mémoire
+        self.menu.selected_theme.set(self.default_theme)
+
         # Instanciation de l'objet Pendu
         self.pendu = Pendu(self.area_pendu, self.config)
 
@@ -181,11 +184,19 @@ class Main():
         if self.display.victory:
             self.playSound(self.victory_sound)
             self.pendu.victory()
-            message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez-vous continuer ?"
-            newgame = messagebox.askyesno("Victoire !", message)
-            if newgame:
-                self.newgame(self.wordlist.random())
-            # Prévoir le fait de terminer la liste
+            # A faire : Prévoir le fait de terminer la liste
+            if len(self.wordlist.pool):
+                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\
+                Voulez-vous continuer ?"
+                newgame = messagebox.askyesno("Victoire !", message)
+                if newgame:
+                    self.newgame(self.wordlist.random())
+            else:
+                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\
+                Voulez avez également trouvé tous les mots de la thématique {self.default_theme[1].capitalize()}. Voulez-vous relancer une partie ?"
+                newgame = messagebox.askyesno("Victoire !", message)
+                if newgame:
+                    self.newgame()
 
     def noRepeat(self, key: str) -> bool:
         "Vérification que la lettre n'a pas déjà été jouée"
@@ -222,8 +233,9 @@ class Main():
         "Modification du thème de jeu par défaut"
         self.default_theme = themes
         set_menu = str(self.default_theme[0]) + " " + self.default_theme[1]
-        self.newgame()
         self.menu.selected_theme.set(set_menu)
+        # A faire : Ajouter la sauvegarde dans le fichier JSON
+        self.newgame()
 
 
 if __name__ == "__main__":
