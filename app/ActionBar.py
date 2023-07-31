@@ -14,7 +14,7 @@ from tkinter import messagebox
 class ActionBar(object):
     "Définition d'un menu d'application"
 
-    def __init__(self, window, xml_file, main_instance) -> None:
+    def __init__(self, window, xml_file, main_instance, wordlist=None) -> None:
         # Parse le fichier XML et obtient l'élément racine
         data = xml.parse(xml_file)
         menus = data.getroot()
@@ -22,6 +22,9 @@ class ActionBar(object):
         self.main = main_instance
         # Création de la barre de menu
         self.action_bar = Menu(self.window)
+        self.wordlist = wordlist
+        # Etat du sous-menu thème en variable globale
+        self.selected_theme = StringVar()
 
         # Création des menus principaux
         for submenu in menus:
@@ -57,11 +60,16 @@ class ActionBar(object):
         if command == 'choosetheme':
             theme_menu = Menu(menu, tearoff=0)
             menu.add_cascade(menu=theme_menu, label=label)
-            self.main
-            radio = StringVar()
-            theme_menu.add_radiobutton(label='Test1', variable=radio, value=1)
-            theme_menu.add_radiobutton(label='Test2', variable=radio, value=2)
-            theme_menu.add_radiobutton(label='Test2', variable=radio, value=3)
+            themes_list = self.wordlist.availableThemes()
+
+            for theme in themes_list:
+                theme_menu.add_radiobutton(label=theme[1].capitalize(
+                ), variable=self.selected_theme, value=theme, command=self.changeTheme)
+
+    def changeTheme(self):
+        theme_tuple = (int(self.selected_theme.get()[
+                       :1]), self.selected_theme.get()[2:])
+        self.main.setThemes(theme_tuple)
 
 
 class Main():
@@ -78,11 +86,11 @@ class Main():
         window = Tk()
         window.title("Super Pendu 3000")
 
-        # Création de la barre de menus
-        menu = ActionBar(window, xml_file, self)
-
         # Création des Mots à parti d'un thème
-        self.wordlist = Word(sql_file, 'devops')
+        wordlist = Word(sql_file, 'devops')
+
+        # Création de la barre de menus
+        menu = ActionBar(window, xml_file, self, wordlist)
 
         # Rendu de l'application
         window.mainloop()
@@ -98,6 +106,9 @@ class Main():
 
     def choosetheme(self):
         print('Thematique')
+
+    def setThemes(self, *args):
+        print('Changement du thème par défaut')
 
 
 if __name__ == "__main__":

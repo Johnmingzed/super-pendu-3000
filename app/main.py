@@ -115,7 +115,7 @@ class Main():
         print(self.word_to_guess)
 
         # Création de la barre de menus
-        menu = ActionBar(self.window, self.xml_file, self)
+        self.menu = ActionBar(self.window, self.xml_file, self, self.wordlist)
 
         # Instanciation de l'objet Pendu
         self.pendu = Pendu(self.area_pendu, self.config)
@@ -135,8 +135,6 @@ class Main():
         self.window.bind('<Key>', self.keyPlay)
         self.window.bind('<Button>', self.mousePlay)
 
-        # Rendu de l'application
-        self.window.mainloop()
 
     def keyPlay(self, e: Event) -> None:
         if not self.pendu.complete and not self.display.victory and e.char:
@@ -220,6 +218,16 @@ class Main():
         self.themes_edit = ThemesMenu(self.sql_file)
         self.themes_edit.word_menu.geometry(f"+{x+400}+{y+40}")
 
+    def setThemes(self, themes: str) -> None:
+        "Modification du thème de jeu par défaut"
+        self.default_theme = themes
+        set_menu = str(self.default_theme[0]) + " " + self.default_theme[1]
+        self.newgame()
+        self.menu.selected_theme.set(set_menu)
+
 
 if __name__ == "__main__":
     main = Main()
+
+    # Rendu de l'application
+    main.window.mainloop()

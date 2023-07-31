@@ -49,6 +49,11 @@ class Word(Pydo):
         "Affiche le nombre d'élément restant dans la liste"
         print(self.pool,'\nReste :', len(self.pool))
         return len(self.pool)
+    
+    def availableThemes(self) -> list:
+        "Affiche la liste des themes disponible"
+        themes = super().selectAll('themes')
+        return themes
 
 if __name__ == "__main__":
     import os
