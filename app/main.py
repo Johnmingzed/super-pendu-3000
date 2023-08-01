@@ -22,8 +22,10 @@ import pygame
 import string
 import os
 
+DEBUG = True
 
 class Main():
+
 
     def __init__(self) -> None:
 
@@ -44,7 +46,6 @@ class Main():
         # Chargement du fichier de configuration
         self.config_constructor = Config(self.json_file, self)
         self.config = self.config_constructor.toDict()
-
 
         # Sélection du theme par defaut
         if hasattr(self, "config"):
@@ -89,6 +90,11 @@ class Main():
                                 highlightthickness=0)
         self.area_word.pack(expand=1)
 
+        # Création du layout de messages
+        self.area_message = Label(self.area_info, background=bg_color2,
+                                text="Thématique : " + self.default_theme[1].capitalize())
+        self.area_message.pack()
+
         # Création du layout du clavier
         self.area_keyboard = Canvas(
             self.area_info, background=bg_color2, highlightthickness=0)
@@ -101,20 +107,20 @@ class Main():
         self.newgame()
 
     def newgame(self, word: str = None) -> None:
-        print("✨ Initialisation d'une nouvelle partie")
+        if DEBUG: print("✨ Initialisation d'une nouvelle partie")
 
         # Définition du mot à trouver
         if word:
-            print('Nouveau mot fournit')
+            if DEBUG: print('Nouveau mot fournit')
             self.word_to_guess = word
         else:
-            print('🔁 Remise à zero de la liste des mots')
+            if DEBUG: print('🔁 Remise à zero de la liste des mots')
             self.wordlist = Word(self.sql_file, self.default_theme[1])
             self.wordlist.viewList()
             self.word_to_guess = self.wordlist.random()
 
-        # Pour debug
-        print("➡️ ", self.word_to_guess)
+        # Affichage de la réponse à fournir
+        if DEBUG: print("➡️ ", self.word_to_guess)
 
         # Création de la barre de menus
         self.menu = ActionBar(self.window, self.xml_file, self, self.wordlist)
@@ -128,6 +134,9 @@ class Main():
         # Instanciation de l'objet Keyboard
         self.clavier = Keyboard(self.area_keyboard, self.config,
                                 column=10, alphabet="abcdefghijklmnopqrstuvwxyz")
+
+        # Affichage de la thématique sélectionnée
+        self.area_message.configure(text="Thématique : " + self.default_theme[1].capitalize())
 
         # Instanciation du l'objet Displayword avec trnasmission du mot
         self.display = DisplayWord(
@@ -186,26 +195,25 @@ class Main():
             self.playSound(self.victory_sound)
             self.pendu.victory()
             if len(self.wordlist.pool):
-                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\
-                Voulez-vous continuer ?"
+                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez-vous continuer ?"
                 newgame = messagebox.askyesno("Victoire !", message)
                 if newgame:
                     self.newgame(self.wordlist.random())
             else:
-                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\
-                Voulez avez également trouvé tous les mots de la thématique {self.default_theme[1].capitalize()}. Voulez-vous relancer une partie ?"
-                newgame = messagebox.askyesno("Victoire !", message)
+                message = f"Vous avez trouvé le mot \"{self.word_to_guess}\" en {len(self.letters_played)} tentatives.\nVoulez avez également trouvé tous les mots de la thématique {self.default_theme[1].capitalize()}.\nVoulez-vous relancer une partie ?"
+                self.area_message.configure(text=f"Voulez avez trouvé tous les mots de la thématique {self.default_theme[1].capitalize()}.")
+                newgame = messagebox.askyesno("Victoire totale !", message)
                 if newgame:
                     self.newgame()
 
     def noRepeat(self, key: str) -> bool:
         "Vérification que la lettre n'a pas déjà été jouée"
         if key in self.letters_played:
-            print("Lettre déjà jouée")
+            if DEBUG: print("Lettre déjà jouée")
             return 0
         else:
             self.letters_played.append(key)
-            print("Lettres jouées :", self.letters_played)
+            if DEBUG: print("Lettres jouées :", self.letters_played)
             return 1
 
     def about(self) -> None:
