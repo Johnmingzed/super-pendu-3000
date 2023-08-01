@@ -16,6 +16,7 @@ import json
 
 class Config:
     def __init__(self, json_file: str, main_instance=None) -> None:
+        # Ouverture du fichier JSON
         with open(json_file) as file:
             json_data = json.load(file)
         self.json_data = json_data

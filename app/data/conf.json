@@ -1,5 +1,6 @@
 {
     "canevas": "lemon chiffon",
+    "background": "white",
     "letters": {
         "active": "white",
         "used": "grey",
