@@ -11,7 +11,7 @@
         </lien>
         <lien>
             <label>Choisir une apparence</label>
-            <command>None</command>
+            <command>editColors</command>
         </lien>
         <lien>
             <label>Quitter </label>

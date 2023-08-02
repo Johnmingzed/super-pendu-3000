@@ -1,0 +1,17 @@
+{
+    "canevas": "#80ffff",
+    "background": "white",
+    "letters": {
+        "active": "white",
+        "used": "grey",
+        "border": "black"
+    },
+    "line": {
+        "color": "black",
+        "width": 5
+    },
+    "theme": {
+        "id": 3,
+        "name": "design"
+    }
+}

@@ -18,6 +18,7 @@ from tkinter import *
 from tkinter import messagebox
 from WordMenu import WordMenu
 from ThemesMenu import ThemesMenu
+from AppearanceMenu import AppearanceMenu
 import pygame
 import string
 import os
@@ -236,6 +237,12 @@ class Main():
         x, y = self.window.winfo_x(), self.window.winfo_y()
         self.themes_edit = ThemesMenu(self.sql_file)
         self.themes_edit.word_menu.geometry(f"+{x+400}+{y+40}")
+
+    def editColors(self) -> None:
+        "Editer l'apparence du jeu"
+        x, y = self.window.winfo_x(), self.window.winfo_y()
+        self.colors_edit = AppearanceMenu(self.config_constructor)
+        self.colors_edit.appearance_menu.geometry(f"+{x+400}+{y+40}")
 
     def setThemes(self, themes: str) -> None:
         "Modification du thème de jeu par défaut"
