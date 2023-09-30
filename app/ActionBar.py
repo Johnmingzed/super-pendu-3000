@@ -9,6 +9,7 @@
 import xml.etree.ElementTree as xml
 from tkinter import *
 from tkinter import messagebox
+from Word import Word
 
 
 class ActionBar(object):
@@ -23,7 +24,7 @@ class ActionBar(object):
         # Création de la barre de menu
         self.action_bar = Menu(self.window)
         self.wordlist = wordlist
-        # Etat du sous-menu thème en variable globale
+        # Etat du sous-menu thème en variable globale sous la forme d'une string du genre : "28 voitures"
         self.selected_theme = StringVar()
 
         # Création des menus principaux
@@ -63,12 +64,17 @@ class ActionBar(object):
             themes_list = self.wordlist.availableThemes()
 
             for theme in themes_list:
-                theme_menu.add_radiobutton(label=theme[1].capitalize(
-                ), variable=self.selected_theme, value=theme, command=self.changeTheme)
+                # Si le thême contient des mots on peut le proposer à l'affichage
+                test = Word(self.main.sql_file, theme[1]).viewList()
+                if test :
+                    theme_menu.add_radiobutton(label=theme[1].capitalize(), variable=self.selected_theme, value=f"{theme[0]} {theme[1]}", command=self.changeTheme)
+
 
     def changeTheme(self):
-        theme_tuple = (int(self.selected_theme.get()[
-                       :1]), self.selected_theme.get()[2:])
+        # Récupére l'ID et le nom du thème sélectionné
+        new_theme = self.selected_theme.get().partition(" ")
+        theme_tuple = (int(new_theme[0]), new_theme[2])
+        print(f"---->self.selected_theme : {self.selected_theme.get()}", new_theme, theme_tuple)
         self.main.setThemes(theme_tuple)
 
 
