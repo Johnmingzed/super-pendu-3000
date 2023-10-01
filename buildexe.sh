@@ -4,4 +4,6 @@ python -m PyInstaller \
     --add-data="LICENSE;." \
     --add-data="app/data;data" \
     --add-data="app/src;src" \
+    --icon="app/src/favicon.ico" \
+    --name="SuperPendu3000" \
     app/main.py
